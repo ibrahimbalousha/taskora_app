@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:taskora_app/core/config/widgets/%D9%90AppElevatedButton.dart';
+import 'package:taskora_app/core/config/widgets/buttons/app_icon_elevated_button.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,13 +14,11 @@ class MyApp extends StatelessWidget {
       home: Scaffold(
         appBar: AppBar(),
         body: Center(
-          child: AddTaskButton(
-            width: 200,
-            height: 70,
-            icon: Icon(Icons.add_box, color: Colors.white),
-            iconPadding: 12,
+          child: AppIconElevatedButton(
+            label: 'Greate Task',
+            icon: Icons.access_alarm_sharp,
+            padding: EdgeInsets.symmetric(vertical: 18),
             onPressed: () {},
-            label: 'Add Task',
           ),
         ),
       ),

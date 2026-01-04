@@ -30,7 +30,7 @@ class AppCustomCard extends StatelessWidget {
       child: Ink(
         padding: p,
         decoration: BoxDecoration(
-          color: color ?? Colors.white, // surface card
+          color: color ?? Colors.white,
           borderRadius: BorderRadius.circular(r),
           border: Border.all(
             color: borderColor ?? ColorManager.borderLight,

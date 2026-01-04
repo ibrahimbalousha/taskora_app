@@ -3,8 +3,8 @@ class AppSizes {
   static const double grid = 4;
 
   // Spacing (padding/margin/gap)
-  static const double s2 = 8;    
-  static const double s3 = 12;  
+  static const double s2 = 8;
+  static const double s3 = 12;
   static const double s4 = 16;
   static const double s5 = 20;
   static const double s6 = 24;
@@ -17,6 +17,10 @@ class AppSizes {
   static const double r12 = 12;
   static const double r16 = 16;
   static const double r24 = 24;
+
+  // Text button sized
+  static const double textButtonSized = 18;
+
 
   // Icon sizes
   static const double i16 = 16;

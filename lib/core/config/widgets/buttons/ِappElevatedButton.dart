@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:taskora_app/core/config/constants/app_sizes.dart';
+import 'package:taskora_app/core/config/constants/color_manager.dart';
 
 class AppElevatedButton extends StatelessWidget {
   final String label;
@@ -20,14 +22,26 @@ class AppElevatedButton extends StatelessWidget {
       width: double.infinity,
       child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
-        style: ElevatedButton.styleFrom(padding: padding),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: ColorManager.primary,
+          padding: padding,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(AppSizes.r8),
+          ),
+        ),
         child: isLoading
             ? const SizedBox(
                 width: 18,
                 height: 18,
                 child: CircularProgressIndicator(strokeWidth: 2),
               )
-            : Text(label),
+            : Text(
+                label,
+                style: TextStyle(
+                  color: ColorManager.backgroundLight,
+                  fontSize: AppSizes.textButtonSized,
+                ),
+              ),
       ),
     );
   }
