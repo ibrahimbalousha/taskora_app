@@ -22,6 +22,14 @@ dev_dependencies:
   flutter_lints: ^5.0.0
 
 flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/splash_logo.png
+  fonts:
+    - family: Cairo
+      fonts:
+        - asset: assets/fonts/Cairo-VariableFont_slnt,wght.ttf
+
 flutter_native_splash:
   color: "#FFFFFF"
   image: assets/images/splash_logo.png
@@ -30,11 +38,3 @@ flutter_native_splash:
   android_12:
     color: "#FFFFFF"
     image: assets/images/splash_logo.png
-
-  uses-material-design: true
-  assets:
-    - assets/images/splash_logo.png
-  fonts:
-    - family: Cairo
-      fonts:
-        - asset: assets/fonts/Cairo-VariableFont_slnt,wght.ttf
