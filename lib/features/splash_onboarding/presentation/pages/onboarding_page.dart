@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:taskora_app/features/splash_onboarding/presentation/bloc/splash_onboarding_state.dart';
+import 'package:taskora_app/features/splash_onboarding/presentation/pages/home_page.dart';
 
 import '../bloc/splash_onboarding_bloc.dart';
 import '../bloc/splash_onboarding_event.dart';
@@ -36,50 +38,59 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: PageView(
-                controller: _controller,
-                onPageChanged: (value) => setState(() => _index = value),
-                children: const [
-                  _OnboardingSlide(
-                    title: 'Organize tasks',
-                    description: 'Keep all your tasks in one place.',
-                  ),
-                  _OnboardingSlide(
-                    title: 'Stay focused',
-                    description: 'Track progress and complete goals.',
-                  ),
-                  _OnboardingSlide(
-                    title: 'Get started',
-                    description: 'Let’s build your productivity.',
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                children: [
-                  Text('${_index + 1}/3'),
-                  const Spacer(),
-                  if (_index < 2)
-                    ElevatedButton(
-                      onPressed: _next,
-                      child: const Text('Next'),
-                    )
-                  else
-                    ElevatedButton(
-                      onPressed: _finish,
-                      child: const Text('Finish'),
+    return BlocListener<SplashOnboardingBloc, SplashOnboardingState>(
+    listener: (context, state) {
+      if (state is NavigateToHome) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (_) => const HomePage()),
+        );
+      }
+    },
+    child: Scaffold(
+        body: SafeArea(
+          child: Column(
+            children: [
+              Expanded(
+                child: PageView(
+                  controller: _controller,
+                  onPageChanged: (value) => setState(() => _index = value),
+                  children: const [
+                    _OnboardingSlide(
+                      title: 'Organize tasks',
+                      description: 'Keep all your tasks in one place.',
                     ),
-                ],
+                    _OnboardingSlide(
+                      title: 'Stay focused',
+                      description: 'Track progress and complete goals.',
+                    ),
+                    _OnboardingSlide(
+                      title: 'Get started',
+                      description: 'Let’s build your productivity.',
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Row(
+                  children: [
+                    Text('${_index + 1}/3'),
+                    const Spacer(),
+                    if (_index < 2)
+                      ElevatedButton(
+                        onPressed: _next,
+                        child: const Text('Next'),
+                      )
+                    else
+                      ElevatedButton(
+                        onPressed: _finish,
+                        child: const Text('Finish'),
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
