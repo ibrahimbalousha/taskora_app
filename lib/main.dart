@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:taskora_app/core/theme/light_theme.dart';
 
 import 'package:taskora_app/features/splash_onboarding/data/datasources/splash_onboarding_local_data_source.dart';
 import 'package:taskora_app/features/splash_onboarding/data/repositories/splash_onboarding_repository_impl.dart';
@@ -37,7 +38,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider.value(
       value: bloc,
-      child: const MaterialApp(
+      child:  MaterialApp(
+        theme: LightTheme.theme,
         debugShowCheckedModeBanner: false,
         title: 'Taskora',
         home: FlutterSplashPage(),
