@@ -18,8 +18,10 @@ class _FlutterSplashPageState extends State<FlutterSplashPage> {
   @override
   void initState() {
     super.initState();
-    // Trigger the startup decision once Flutter splash is shown.
-    context.read<SplashOnboardingBloc>().add(const AppStartedEvent());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      context.read<SplashOnboardingBloc>().add(const AppStartedEvent());
+    });
   }
 
   @override
@@ -36,11 +38,7 @@ class _FlutterSplashPageState extends State<FlutterSplashPage> {
           );
         }
       },
-      child: const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      ),
+      child: const Scaffold(body: Center(child: CircularProgressIndicator())),
     );
   }
 }
