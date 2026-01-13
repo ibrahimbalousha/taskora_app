@@ -30,7 +30,7 @@ class AppIconElevatedButton extends StatelessWidget {
         onPressed: onPressed,
         icon: Icon(
           icon,
-          size: AppSizes.textButtonSized,
+          size: AppSizes.customTextButtonSized,
           color: ColorManager.backgroundLight,
         ),
         label: Padding(
@@ -39,7 +39,7 @@ class AppIconElevatedButton extends StatelessWidget {
             label,
             style: TextStyle(
               color: ColorManager.backgroundLight,
-              fontSize: AppSizes.textButtonSized,
+              fontSize: AppSizes.customTextButtonSized,
             ),
           ),
         ),

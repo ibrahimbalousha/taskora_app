@@ -7,6 +7,7 @@ class AppElevatedButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final bool isLoading;
   final EdgeInsetsGeometry padding;
+  final bool inverted;
 
   const AppElevatedButton({
     super.key,
@@ -14,6 +15,7 @@ class AppElevatedButton extends StatelessWidget {
     required this.onPressed,
     this.isLoading = false,
     this.padding = const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+    this.inverted = false,
   });
 
   @override
@@ -23,7 +25,11 @@ class AppElevatedButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: ColorManager.primary,
+          backgroundColor: inverted ? Colors.white : ColorManager.primary,
+          foregroundColor: inverted ? ColorManager.primary : Colors.white,
+          side: inverted
+              ? BorderSide(color: Colors.white.withOpacity(0.25))
+              : null,
           padding: padding,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppSizes.r8),
@@ -38,7 +44,7 @@ class AppElevatedButton extends StatelessWidget {
             : Text(
                 label,
                 style: TextStyle(
-                  color: ColorManager.backgroundLight,
+                  color: inverted ? ColorManager.primary : Colors.white,
                   fontSize: AppSizes.textButtonSized,
                 ),
               ),
