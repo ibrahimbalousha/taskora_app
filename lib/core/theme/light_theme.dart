@@ -39,8 +39,8 @@ class LightTheme {
         // Headings (حسب الستايل اللي عندك: 18/30 و 15/30)
         headlineLarge: textTheme.headlineLarge?.copyWith(
           fontFamily: 'Cairo',
-          fontSize: 18,
-          fontWeight: FontWeight.w700,
+          fontSize: 22,
+          fontWeight: FontWeight.w900,
           height: 30 / 18,
         ),
         headlineMedium: textTheme.headlineMedium?.copyWith(
@@ -65,8 +65,8 @@ class LightTheme {
         // Body
         bodyLarge: textTheme.bodyLarge?.copyWith(
           fontFamily: 'Cairo',
-          fontSize: 13,
-          fontWeight: FontWeight.w400,
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
         ),
         bodyMedium: textTheme.bodyMedium?.copyWith(
           fontFamily: 'Cairo',

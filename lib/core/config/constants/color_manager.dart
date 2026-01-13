@@ -4,9 +4,9 @@ class ColorManager {
   ColorManager._();
 
   // Primary palette
-  static const Color primary = Color(0xFF5B6CFF); 
-  static const Color primarySoft = Color(0xFFEFF1FF); 
-  static const Color primaryHover = Color(0xFFC7D2FE); 
+  static const Color primary = Color(0xFF5B6CFF);
+  static const Color primarySoft = Color(0xFFF5F5F5);
+  static const Color primaryHover = Color(0xFFC7D2FE);
 
   // Neutral palette
   static const Color backgroundLight = Color(0xFFF8FAFC);

@@ -19,8 +19,8 @@ class AppSizes {
   static const double r24 = 24;
 
   // Text button sized
-  static const double textButtonSized = 18;
-
+  static const double customTextButtonSized = 12;
+  static const double textButtonSized = 14;
 
   // Icon sizes
   static const double i16 = 16;
