@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:taskora_app/core/config/constants/app_sizes.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -17,16 +18,23 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      centerTitle: true,
       leading: leading,
-      title: Row(
-        children: [
-          if (logoAsset != null) ...[
-            Image.asset(logoAsset!, height: 26),
-            const SizedBox(width: 10),
-          ],
-          Text(title),
-        ],
-      ),
+      title: logoAsset != null
+          ? Row(
+              children: [
+                Image.asset(logoAsset!, height: 26),
+                const SizedBox(width: 10),
+                Text(title, style: TextStyle(fontSize: AppSizes.s6)),
+              ],
+            )
+          : Text(
+              title,
+              style: TextStyle(
+                fontSize: AppSizes.s5,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
       actions: actions,
     );
   }
