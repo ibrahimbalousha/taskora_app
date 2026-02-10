@@ -8,6 +8,10 @@ import 'package:taskora_app/core/config/widgets/buttons/app_elevated_button.dart
 import 'package:taskora_app/core/config/widgets/inputs/app_text_field.dart';
 import 'package:taskora_app/core/config/widgets/text/app_rich_text.dart';
 import 'package:taskora_app/core/config/widgets/text/blue_main_text.dart';
+import 'package:taskora_app/features/auth/data/repositories/auth_repository_impl.dart';
+import 'package:taskora_app/features/auth/domain/usecases/forgot_password_usecase.dart';
+import 'package:taskora_app/features/auth/domain/usecases/reset_password_usecase.dart';
+import 'package:taskora_app/features/auth/domain/usecases/verify_reset_code_usecase.dart';
 import 'package:taskora_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:taskora_app/features/auth/presentation/bloc/auth_event.dart';
 import 'package:taskora_app/features/auth/presentation/bloc/auth_state.dart';
@@ -17,10 +21,15 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<AuthBloc>(
-      create: (_) => AuthBloc(),
-      child: const _LoginView(),
-    );
+   return BlocProvider<AuthBloc>(
+  create: (_) => AuthBloc(
+    forgotPasswordUseCase: ForgotPasswordUseCase(AuthRepositoryImpl()),
+    verifyResetCodeUseCase: VerifyResetCodeUseCase(AuthRepositoryImpl()),
+    resetPasswordUseCase: ResetPasswordUseCase(AuthRepositoryImpl()),
+  ),
+  child: const _LoginView(),
+);
+
   }
 }
 
@@ -43,12 +52,12 @@ class _LoginViewState extends State<_LoginView> {
       listener: (context, state) {
         if (state is AuthLoading) {
           // show loader if needed
-        } else if (state is AuthSuccess) {
-          // TODO: navigate to home (via router)
+        } else if (state is LoginSuccess) {
+          // navigate to home لاحقًا
         } else if (state is AuthError) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(state.message)),
-          );
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text(state.message)));
         }
       },
       child: Scaffold(
@@ -134,11 +143,11 @@ class _LoginViewState extends State<_LoginView> {
                       isLoading: state is AuthLoading,
                       onPressed: () {
                         context.read<AuthBloc>().add(
-                              LoginEvent(
-                                email: _emailController.text.trim(),
-                                password: _passwordController.text.trim(),
-                              ),
-                            );
+                          LoginEvent(
+                            identifier: _emailController.text.trim(),
+                            password: _passwordController.text.trim(),
+                          ),
+                        );
                       },
                     );
                   },
