@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:taskora_app/core/error/Failure.dart';
+import 'package:taskora_app/core/error/failure.dart';
 import 'package:taskora_app/features/auth/domain/repositories/auth_repository.dart';
 
 class ForgotPasswordUseCase {

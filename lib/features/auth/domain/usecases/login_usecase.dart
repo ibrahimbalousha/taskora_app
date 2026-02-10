@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:taskora_app/core/error/Failure.dart';
+import 'package:taskora_app/core/error/failure.dart';
 import '../repositories/auth_repository.dart';
 import '../entities/auth_token.dart';
 
