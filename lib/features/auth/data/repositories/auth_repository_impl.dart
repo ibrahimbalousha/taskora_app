@@ -27,4 +27,10 @@ class AuthRepositoryImpl  implements AuthRepository{
     // TODO: implement signUp
     throw UnimplementedError();
   }
+  
+  @override
+  Future<Either<Failure, bool>> verifyResetCode({required String identifier, required String code}) {
+    // TODO: implement verifyResetCode
+    throw UnimplementedError();
+  }
 }
