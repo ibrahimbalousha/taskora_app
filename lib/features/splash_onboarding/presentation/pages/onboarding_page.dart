@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:taskora_app/core/config/constants/app_sizes.dart';
 import 'package:taskora_app/core/config/constants/color_manager.dart';
 import 'package:taskora_app/core/config/constants/image_path.dart';
-import 'package:taskora_app/core/config/widgets/buttons/%D9%90appElevatedButton.dart';
+import 'package:taskora_app/core/config/widgets/buttons/app_elevated_button.dart';
 import 'package:taskora_app/core/config/widgets/buttons/custom_text_button.dart';
 import 'package:taskora_app/features/splash_onboarding/presentation/bloc/splash_onboarding_state.dart';
 import 'package:taskora_app/features/splash_onboarding/presentation/pages/home_page.dart';
