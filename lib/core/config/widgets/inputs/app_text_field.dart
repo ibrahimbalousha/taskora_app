@@ -4,8 +4,8 @@ import 'package:taskora_app/core/config/constants/color_manager.dart';
 
 class AppTextField extends StatelessWidget {
   final TextEditingController? controller;
-  final String? hint;
-  final String? label;
+  final String hint;
+  final String label;
   final FormFieldValidator<String>? validator;
   final TextInputType keyboardType;
   final bool obscureText;
@@ -16,8 +16,8 @@ class AppTextField extends StatelessWidget {
   const AppTextField({
     super.key,
     this.controller,
-    this.hint,
-    this.label,
+    required this.hint,
+    required this.label,
     this.validator,
     this.keyboardType = TextInputType.text,
     this.obscureText = false,

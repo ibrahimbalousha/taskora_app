@@ -46,14 +46,18 @@ class AppSizes {
 }
 
 class AppPadding {
-  static const EdgeInsets topPagePadding = EdgeInsets.only(top: 16);
-  static const EdgeInsets topTextFieldPadding = EdgeInsets.only(top: 16);
+  // static const EdgeInsets topPagePadding = EdgeInsets.only(top: 16);
+  static const EdgeInsets topWidgetPadding = EdgeInsets.only(top: 16);
+  static const EdgeInsets pinputPadding = EdgeInsets.only(top: 24, bottom: 8);
+
   static const EdgeInsets elevatedButtonPadding = EdgeInsets.only(
     top: 24,
     bottom: 8,
   );
 
-  static const EdgeInsets horizontalPagePadding = EdgeInsets.symmetric(
-    horizontal: 20,
+  static const EdgeInsets horizontalPagePaddingAndTop = EdgeInsets.only(
+    left: 20,
+    right: 20,
+    top: 16,
   );
 }

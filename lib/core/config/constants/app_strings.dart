@@ -14,8 +14,8 @@ class AppStringsCommon {
   static const String createTask = 'Create Task';
   static const String delete = 'Delete';
   static const String done = 'Done';
-  static const String dontReceiveCodeResendCode =
-      'Don’t receive code ? Resend code';
+  static const String dontReceiveCode = 'Don’t receive code ? ';
+  static const String resendCode = 'Resend code';
   static const String eMail = 'E-mail';
   static const String enterCode = 'Enter Code';
   static const String estHours = 'Est :Hours';
@@ -87,6 +87,7 @@ class AppStringsAuth {
       'Email is incorrect . Please double -check your credentials .';
   static const String enterYourEmailAddress = 'Enter your email address';
   static const String enterYourName = 'Enter Your Name';
+  static const String enterYourUserName = 'Enter Your UserName';
   static const String forgetPassword = 'Forget Password ?';
   static const String forgotPassword = 'Forgot Password?';
   static const String logIn = 'Log In';
@@ -97,7 +98,6 @@ class AppStringsAuth {
       'Please cheak your email for the...ess correctly so that you can reset your password.';
   static const String pleaseLoginOrSignUpToContinueOurOpp =
       'Please login or sign up to continue our opp';
-  static const String resendCode = 'Resend code';
   static const String signUp = 'Sign Up';
   static const String verifyEmail = 'Verify Email';
   static const String welcomeBack = 'Welcome Back ! 👋';
