@@ -9,12 +9,14 @@ class LoginUseCase {
   LoginUseCase(this.repository);
 
   Future<Either<Failure, AuthToken>> call({
-    required String identifier,
+    required String email,
     required String password,
+    required String username,
   }) {
     return repository.login(
-      identifier: identifier,
+      email: email,
       password: password,
+      username: username,
     );
   }
 }

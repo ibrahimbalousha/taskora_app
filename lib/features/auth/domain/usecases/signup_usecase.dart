@@ -12,12 +12,14 @@ class SignupUseCase {
     required String username,
     required String email,
     required String password,
+    required String watchCost,
   }) {
     return repository.signUp(
       name: name,
       username: username,
       email: email,
       password: password,
+      watchCost: watchCost,
     );
   }
 }
