@@ -8,10 +8,14 @@ class ForgotPasswordUseCase {
   ForgotPasswordUseCase(this.repository);
 
   Future<Either<Failure, Unit>> call({
-    required String identifier,
+    required String email,
+    required String name,
+    required String username,
   }) {
     return repository.forgotPassword(
-      identifier: identifier,
+      email: email,
+      name: name,
+      username: username,
     );
   }
 }

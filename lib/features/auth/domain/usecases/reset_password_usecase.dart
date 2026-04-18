@@ -8,12 +8,12 @@ class ResetPasswordUseCase {
   ResetPasswordUseCase(this.repository);
 
   Future<Either<Failure, Unit>> call({
-    required String identifier,
+    required String email,
     required String newPassword,
     required String resetCode,
   }) {
     return repository.resetPassword(
-      identifier: identifier,
+      email: email,
       newPassword: newPassword,
       resetCode: resetCode,
     );

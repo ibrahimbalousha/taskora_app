@@ -17,7 +17,7 @@ class LoginFailed extends StatelessWidget {
         ),
       ),
       body: Padding(
-        padding: AppPadding.horizontalPagePadding,
+        padding: AppPadding.horizontalPagePaddingAndTop,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -79,7 +79,9 @@ class LoginFailed extends StatelessWidget {
               child: AppElevatedButton(
                 padding: EdgeInsetsGeometry.all(12),
                 label: AppStringsCommon.tryAgain,
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pop(context);
+                },
               ),
             ),
 
