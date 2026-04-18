@@ -1,34 +1,29 @@
 import 'package:dartz/dartz.dart';
 import 'package:taskora_app/core/error/failure.dart';
+import 'package:taskora_app/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:taskora_app/features/auth/domain/entities/auth_token.dart';
 import 'package:taskora_app/features/auth/domain/repositories/auth_repository.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
+  final AuthRemoteDataSourceImpl remoteDataSource;
 
+  AuthRepositoryImpl({required this.remoteDataSource});
   @override
   Future<Either<Failure, AuthToken>> login({
-    required String identifier,
+    required String email,
     required String password,
+    required String username,
   }) async {
-    await Future.delayed(const Duration(seconds: 1));
-
-    // 🔐 mock validation
-    if (identifier.isEmpty || password.isEmpty) {
-      return const Left(
-        ServerFailure('Email or password cannot be empty'),
+    try {
+      final authToken = await remoteDataSource.login(
+        email: email,
+        password: password,
+        username: username,
       );
+      return Right(authToken);
+    } catch (e) {
+      return Left(ServerFailure('Login failed'));
     }
-
-    if (password != 'P@ssw0rd123') {
-      return const Left(
-        ServerFailure('Invalid credentials'),
-      );
-    }
-
-    // ✅ success
-    return Right(
-      AuthToken(token: 'mock_access_token_123'),
-    );
   }
 
   @override
@@ -37,71 +32,58 @@ class AuthRepositoryImpl implements AuthRepository {
     required String username,
     required String email,
     required String password,
+    required String watchCost,
   }) async {
-    await Future.delayed(const Duration(seconds: 1));
-
     if (email.isEmpty || password.isEmpty) {
-      return const Left(
-        ServerFailure('Invalid signup data'),
-      );
+      return const Left(ServerFailure('Invalid Signup Data'));
     }
 
-    return const Right(unit);
+    return Right(
+      await remoteDataSource.signUp(
+        name: name,
+        username: username,
+        email: email,
+        password: password,
+        watchCost: watchCost,
+      ),
+    );
   }
 
   @override
   Future<Either<Failure, Unit>> forgotPassword({
-    required String identifier,
+    required String email,
+    required String name,
+    required String username,
   }) async {
-    await Future.delayed(const Duration(seconds: 1));
-
-    if (identifier.isEmpty) {
-      return const Left(
-        ServerFailure('Identifier is required'),
-      );
+    if (email.isEmpty || name.isEmpty || username.isEmpty) {
+      return const Left(ServerFailure('Invalid Forgot Password Data'));
     }
 
-    // training mode: code always sent (1234)
-    return const Right(unit);
-  }
-
-  @override
-  Future<Either<Failure, bool>> verifyResetCode({
-    required String identifier,
-    required String code,
-  }) async {
-    await Future.delayed(const Duration(seconds: 1));
-
-    // training code
-    if (code == '1234') {
-      return const Right(true);
-    } else {
-      return const Left(
-        ServerFailure('Invalid verification code'),
-      );
-    }
+    return Right(
+      await remoteDataSource.forgotPassword(
+        email: email,
+        name: name,
+        username: username,
+      ),
+    );
   }
 
   @override
   Future<Either<Failure, Unit>> resetPassword({
-    required String identifier,
+    required String email,
     required String newPassword,
     required String resetCode,
-  }) async {
-    await Future.delayed(const Duration(seconds: 1));
+  }) {
+    // TODO: implement resetPassword
+    throw UnimplementedError();
+  }
 
-    if (resetCode != '1234') {
-      return const Left(
-        ServerFailure('Invalid reset code'),
-      );
-    }
-
-    if (newPassword.length < 6) {
-      return const Left(
-        ServerFailure('Password too short'),
-      );
-    }
-
-    return const Right(unit);
+  @override
+  Future<Either<Failure, bool>> verifyResetCode({
+    required String email,
+    required String code,
+  }) {
+    // TODO: implement verifyResetCode
+    throw UnimplementedError();
   }
 }
