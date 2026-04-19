@@ -5,6 +5,7 @@ import 'splash_onboarding_keys.dart';
 abstract class SplashOnboardingLocalDataSource {
   Future<bool> isOnboardingCompleted();
   Future<void> setOnboardingCompleted();
+  Future<bool> isLoggedIn();
 }
 
 class SplashOnboardingLocalDataSourceImpl
@@ -21,5 +22,10 @@ class SplashOnboardingLocalDataSourceImpl
   @override
   Future<void> setOnboardingCompleted() async {
     await _prefs.setBool(SplashOnboardingKeys.onboardingCompleted, true);
+  }
+
+  Future<bool> isLoggedIn() async {
+    final token = _prefs.getString(SplashOnboardingKeys.token);
+    return token != null && token.isNotEmpty;
   }
 }
