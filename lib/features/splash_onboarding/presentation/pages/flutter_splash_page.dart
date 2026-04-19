@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:taskora_app/features/splash_onboarding/presentation/pages/onboarding_page.dart';
+import 'package:taskora_app/core/router/routers_name.dart';
 
 import '../bloc/splash_onboarding_bloc.dart';
 import '../bloc/splash_onboarding_event.dart';
 import '../bloc/splash_onboarding_state.dart';
-import 'home_page.dart';
 
 class FlutterSplashPage extends StatefulWidget {
   const FlutterSplashPage({super.key});
@@ -15,12 +14,15 @@ class FlutterSplashPage extends StatefulWidget {
 }
 
 class _FlutterSplashPageState extends State<FlutterSplashPage> {
+  bool _appStartedCalled = false;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
+      if (!mounted || _appStartedCalled) return;
       context.read<SplashOnboardingBloc>().add(const AppStartedEvent());
+      _appStartedCalled = true; // يضمن أن الحدث يرسل مرة واحدة فقط
     });
   }
 
@@ -28,14 +30,12 @@ class _FlutterSplashPageState extends State<FlutterSplashPage> {
   Widget build(BuildContext context) {
     return BlocListener<SplashOnboardingBloc, SplashOnboardingState>(
       listener: (context, state) {
-        if (state is ShowOnboarding) {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (_) => const OnboardingPage()),
-          );
+        if (state is ShowLoginPage) {
+          Navigator.pushReplacementNamed(context, RoutesName.login);
         } else if (state is NavigateToHome) {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (_) => const HomePage()),
-          );
+          Navigator.pushReplacementNamed(context, RoutesName.home);
+        } else if (state is ShowOnboarding) {
+          Navigator.pushReplacementNamed(context, RoutesName.onboardingPage);
         }
       },
       child: const Scaffold(body: Center(child: CircularProgressIndicator())),
