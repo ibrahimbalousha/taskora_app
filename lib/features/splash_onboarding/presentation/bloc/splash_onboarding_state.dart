@@ -22,3 +22,7 @@ class ShowOnboarding extends SplashOnboardingState {
 class NavigateToHome extends SplashOnboardingState {
   const NavigateToHome();
 }
+
+class ShowLoginPage extends SplashOnboardingState {
+  const ShowLoginPage();
+}
