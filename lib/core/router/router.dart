@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:taskora_app/features/auth/presentation/pages/login_failed.dart';
+import 'package:taskora_app/features/auth/presentation/pages/great_new_passwoed.dart';
 import 'package:taskora_app/features/auth/presentation/pages/login_page.dart';
 import 'package:taskora_app/features/auth/presentation/pages/recover_by_email.dart';
 import 'package:taskora_app/features/auth/presentation/pages/signup_page.dart';
@@ -24,12 +24,12 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const SignUpPage());
       case RoutesName.home:
         return MaterialPageRoute(builder: (_) => const HomePage());
-      case RoutesName.loginFailed:
-        return MaterialPageRoute(builder: (_) => const LoginFailed());
       case RoutesName.recoverByEmail:
         return MaterialPageRoute(builder: (_) => const RecoverByEmail());
       case RoutesName.verificationCode:
         return MaterialPageRoute(builder: (_) => const VerificationCodePage());
+          case RoutesName.greatNewPasswoed:
+        return MaterialPageRoute(builder: (_) => const GreatNewPasswoed());
 
       default:
         return null;
