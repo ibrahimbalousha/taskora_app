@@ -3,12 +3,10 @@ abstract class AuthEvent {}
 class LoginEvent extends AuthEvent {
   final String email;
   final String password;
-  final String username;
 
   LoginEvent({
     required this.email,
     required this.password,
-    required this.username,
   });
 }
 
@@ -30,31 +28,30 @@ class SignUpEvent extends AuthEvent {
 
 class ForgotPasswordEvent extends AuthEvent {
   final String email;
-  final String name;
-  final String username;
 
   ForgotPasswordEvent({
     required this.email,
-    required this.name,
-    required this.username,
   });
 }
 
 class VerifyResetCodeEvent extends AuthEvent {
-  final String email;
-  final String code;
+  final int code;
 
-  VerifyResetCodeEvent({required this.email, required this.code});
+  VerifyResetCodeEvent({required this.code});
 }
-
 class ResetPasswordEvent extends AuthEvent {
   final String email;
   final String newPassword;
-  final String resetCode;
 
   ResetPasswordEvent({
     required this.email,
     required this.newPassword,
-    required this.resetCode,
   });
 }
+
+class ResendCodeEvent extends AuthEvent {
+  final String email;
+  ResendCodeEvent({required this.email});
+}
+
+class ResetAuthState extends AuthEvent {}

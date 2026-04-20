@@ -6,7 +6,10 @@ class AuthInitial extends AuthState {}
 
 class AuthLoading extends AuthState {}
 
-class ForgotPasswordSuccess extends AuthState {}
+class ForgotPasswordSuccess extends AuthState {
+  final String email;
+  ForgotPasswordSuccess({required this.email});
+}
 
 class VerifyResetCodeSuccess extends AuthState {}
 
@@ -18,10 +21,32 @@ class LoginSuccess extends AuthState {
   LoginSuccess({required this.authToken});
 }
 
-class SignUpSuccess extends AuthState {}
-
-class AuthError extends AuthState {
+class SignUpSuccess extends AuthState {
   final String message;
 
-  AuthError(this.message);
+  SignUpSuccess({this.message = 'Sign up successful!'});
+}
+class LoginError extends AuthState {
+  final String message;
+  LoginError(this.message);
+}
+
+class SignUpError extends AuthState {
+  final String message;
+  SignUpError(this.message);
+}
+
+class ForgotPasswordError extends AuthState {
+  final String message;
+  ForgotPasswordError(this.message);
+}
+
+class VerifyCodeError extends AuthState {
+  final String message;
+  VerifyCodeError(this.message);
+}
+
+class ResetPasswordError extends AuthState {
+  final String message;
+  ResetPasswordError(this.message);
 }

@@ -13,7 +13,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final ResetPasswordUseCase resetPasswordUseCase;
   final LoginUseCase loginUseCase;
   final SignupUseCase signUpUseCase;
-
+  String? currentEmail;
   AuthBloc({
     required this.signUpUseCase,
     required this.loginUseCase,
@@ -21,6 +21,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     required this.verifyResetCodeUseCase,
     required this.resetPasswordUseCase,
   }) : super(AuthInitial()) {
+    on<ResendCodeEvent>((ResendCodeEvent event, Emitter<AuthState> emit) async {
+      emit(AuthLoading());
+      try {
+        await forgotPasswordUseCase(email: event.email); // نفس الدالة
+        emit(ForgotPasswordSuccess(email: event.email)); // البريد محفوظ
+      } catch (e) {
+        emit(ResetPasswordError(e.toString()));
+      }
+    });
+    on<ResetAuthState>((event, emit) {
+      emit(AuthInitial());
+    });
     on<LoginEvent>(_onLogin);
     on<ForgotPasswordEvent>(_onForgotPassword);
     on<VerifyResetCodeEvent>(_onVerifyResetCode);
@@ -39,9 +51,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     );
 
     result.fold(
-      (failure) => emit(AuthError(failure.message)),
-      (_) => emit(SignUpSuccess()),
-    );
+  (failure) {
+    if (failure.message is List) {
+      final errors = (failure.message as List).join('\n');
+      emit(SignUpError(errors)); // ✅ String
+    } else {
+      emit(SignUpError(failure.message.toString()));
+    }
+  },
+  (_) => emit(SignUpSuccess(message: 'Account created successfully')),
+);
   }
 
   Future<void> _onLogin(LoginEvent event, Emitter<AuthState> emit) async {
@@ -50,11 +69,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     final result = await loginUseCase(
       email: event.email,
       password: event.password,
-      username: event.username,
     );
 
     result.fold(
-      (failure) => emit(AuthError(failure.message)),
+      (failure) => emit(LoginError(failure.message)),
       (authToken) => emit(LoginSuccess(authToken: authToken)),
     );
   }
@@ -65,11 +83,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     emit(AuthLoading());
 
-    final result = await forgotPasswordUseCase(email: event.email,name: event.name,username: event.username);
+    final result = await forgotPasswordUseCase(email: event.email);
 
     result.fold(
-      (failure) => emit(AuthError(failure.message)),
-      (_) => emit(ForgotPasswordSuccess()),
+      (failure) {
+        emit(
+          ForgotPasswordError(failure.message.replaceAll('Exception: ', '')),
+        );
+      },
+      (user) {
+        currentEmail = user.email;
+        emit(ForgotPasswordSuccess(email: user.email)); // ✅ الإيميل موجود
+      },
     );
   }
 
@@ -79,13 +104,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     emit(AuthLoading());
 
-    final result = await verifyResetCodeUseCase(
-      email: event.email,
-      code: event.code,
-    );
+    final result = await verifyResetCodeUseCase(code: event.code);
 
     result.fold(
-      (failure) => emit(AuthError(failure.message)),
+      (failure) => emit(VerifyCodeError(failure.message)),
       (_) => emit(VerifyResetCodeSuccess()),
     );
   }
@@ -99,11 +121,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     final result = await resetPasswordUseCase(
       email: event.email,
       newPassword: event.newPassword,
-      resetCode: event.resetCode,
     );
 
     result.fold(
-      (failure) => emit(AuthError(failure.message)),
+      (failure) => emit(ResetPasswordError(failure.message)),
       (_) => emit(ResetPasswordSuccess()),
     );
   }
