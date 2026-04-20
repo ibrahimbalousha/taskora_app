@@ -1,5 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:taskora_app/core/error/failure.dart';
+import 'package:taskora_app/features/auth/domain/entities/user.dart';
 import 'package:taskora_app/features/auth/domain/repositories/auth_repository.dart';
 
 class ForgotPasswordUseCase {
@@ -7,15 +8,11 @@ class ForgotPasswordUseCase {
 
   ForgotPasswordUseCase(this.repository);
 
-  Future<Either<Failure, Unit>> call({
+  Future<Either<Failure, User>> call({
     required String email,
-    required String name,
-    required String username,
   }) {
     return repository.forgotPassword(
       email: email,
-      name: name,
-      username: username,
     );
   }
 }
