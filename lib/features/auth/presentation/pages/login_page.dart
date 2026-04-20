@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:taskora_app/core/config/constants/app_sizes.dart';
 import 'package:taskora_app/core/config/constants/app_strings.dart';
 import 'package:taskora_app/core/config/widgets/app_bars/custom_app_bar.dart';
 import 'package:taskora_app/core/config/widgets/buttons/app_elevated_button.dart';
+import 'package:taskora_app/core/config/widgets/buttons/custom_text_button.dart';
+import 'package:taskora_app/core/config/widgets/feedback/app_snack_bar.dart';
 import 'package:taskora_app/core/config/widgets/inputs/app_text_field.dart';
 import 'package:taskora_app/core/config/widgets/text/app_rich_text.dart';
 import 'package:taskora_app/core/config/widgets/text/blue_main_text.dart';
@@ -23,8 +24,9 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
 
-  bool rememberMe = false;
+  bool obscureText = true;
 
   @override
   void dispose() {
@@ -39,91 +41,119 @@ class _LoginPageState extends State<LoginPage> {
       listener: (context, state) {
         if (state is LoginSuccess) {
           Navigator.pushReplacementNamed(context, RoutesName.home);
-        } else if (state is AuthError) {
-          Navigator.pushNamed(context, RoutesName.loginFailed);
+        } else if (state is LoginError) {
+          AppSnackBar.show(context, message: state.message);
         }
       },
       child: Scaffold(
         appBar: CustomAppBar(title: AppStringsAuth.logIn),
-        body: Padding(
-          padding: AppPadding.horizontalPagePaddingAndTop,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              BlueMainText(text: AppStringsAuth.welcomeBack),
-              Text(AppStringsAuth.pleaseLoginOrSignUpToContinueOurOpp),
+        body: Form(
+          key: _formKey,
+          child: Padding(
+            padding: AppPadding.horizontalPagePaddingAndTop,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                BlueMainText(text: AppStringsAuth.welcomeBack),
+                Text(AppStringsAuth.pleaseLoginOrSignUpToContinueOurOpp),
 
-              Padding(
-                padding: AppPadding.topWidgetPadding,
-                child: AppTextField(
-                  controller: _emailController,
-                  label: 'E-mail',
-                  hint:  AppStringsAuth.hintEmailExample,
-                  keyboardType: TextInputType.emailAddress,
-                  prefixIcon: const Icon(Icons.email_outlined),
-                ),
-              ),
+                Padding(
+                  padding: AppPadding.topWidgetPadding,
+                  child: AppTextField(
+                    controller: _emailController,
+                    label: 'E-mail',
+                    hint: AppStringsAuth.hintEmailExample,
+                    keyboardType: TextInputType.emailAddress,
+                    prefixIcon: const Icon(Icons.email_outlined),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter your email address correctly.';
+                      }
 
-              Padding(
-                padding: AppPadding.topWidgetPadding,
-                child: AppTextField(
-                  controller: _passwordController,
-                  label: 'Password',
-                  hint: AppStringsAuth.passwordExample,
-                  obscureText: true,
-                  prefixIcon: const Icon(Icons.lock_outline),
-                ),
-              ),
+                      final emailRegex = RegExp(
+                        r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                      );
 
-              Row(
-                children: [
-                  Checkbox(
-                    value: rememberMe,
-                    onChanged: (value) {
-                      setState(() {
-                        rememberMe = value ?? false;
-                      });
+                      if (!emailRegex.hasMatch(value)) {
+                        return 'Please enter a valid email address.';
+                      }
+
+                      return null;
                     },
                   ),
-                  const Text(AppStringsCommon.rememberMe),
-                ],
-              ),
+                ),
 
-              Padding(
-                padding: AppPadding.elevatedButtonPadding,
-                child: BlocBuilder<AuthBloc, AuthState>(
-                  builder: (context, state) {
-                    return AppElevatedButton(
-                      label: AppStringsAuth.logIn,
-                      isLoading: state is AuthLoading,
-                      onPressed: () async {
-                        SharedPreferences prefs =
-                            await SharedPreferences.getInstance();
-
-                        context.read<AuthBloc>().add(
-                          LoginEvent(
-                            email: _emailController.text.trim(),
-                            password: _passwordController.text.trim(),
-                            username: prefs.getString('username')!,
-                          ),
-                        );
+                Padding(
+                  padding: AppPadding.topWidgetPadding,
+                  child: AppTextField(
+                    controller: _passwordController,
+                    label: 'Password',
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        obscureText = !obscureText;
+                        setState(() {});
                       },
-                    );
-                  },
+                      icon: Icon(
+                        obscureText
+                            ? Icons.visibility_off_outlined
+                            : Icons.visibility_outlined,
+                      ),
+                    ),
+                    hint: AppStringsAuth.passwordExample,
+                    obscureText: obscureText,
+                    prefixIcon: const Icon(Icons.lock_outline),
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'This field is required';
+                      }
+                      return null;
+                    },
+                  ),
                 ),
-              ),
 
-              Align(
-                alignment: Alignment.center,
-                child: AppRichText(
-                  text: AppStringsAuth.dontHaveAnAccount,
-                  actionText: AppStringsAuth.createAAccount,
-                  onTap: () {
-                    Navigator.pushNamed(context, RoutesName.signup);
+                CustomTextButton(
+                  label: AppStringsAuth.forgetPassword,
+                  onPressed: () {
+                    Navigator.pushNamed(context, RoutesName.recoverByEmail);
                   },
                 ),
-              ),
-            ],
+
+                Padding(
+                  padding: AppPadding.elevatedButtonPadding,
+                  child: BlocBuilder<AuthBloc, AuthState>(
+                    builder: (context, state) {
+                      return AppElevatedButton(
+                        label: AppStringsAuth.logIn,
+                        isLoading: state is AuthLoading,
+                        onPressed: state is AuthLoading
+                            ? null
+                            : () async {
+                                if (_formKey.currentState!.validate()) {
+                                  context.read<AuthBloc>().add(
+                                    LoginEvent(
+                                      email: _emailController.text.trim(),
+                                      password: _passwordController.text.trim(),
+                                    ),
+                                  );
+                                }
+                              },
+                      );
+                    },
+                  ),
+                ),
+
+                Align(
+                  alignment: Alignment.center,
+                  child: AppRichText(
+                    text: AppStringsAuth.dontHaveAnAccount,
+                    actionText: AppStringsAuth.createAAccount,
+                    onTap: () {
+                      Navigator.pushNamed(context, RoutesName.signup);
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

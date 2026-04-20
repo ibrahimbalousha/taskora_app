@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:taskora_app/core/config/constants/app_sizes.dart';
 import 'package:taskora_app/core/config/constants/app_strings.dart';
 import 'package:taskora_app/core/config/widgets/app_bars/custom_app_bar.dart';
@@ -25,6 +24,8 @@ class _SignUpPageState extends State<SignUpPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final watchCostController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+  bool obscureText = true;
 
   @override
   void dispose() {
@@ -46,12 +47,20 @@ class _SignUpPageState extends State<SignUpPage> {
             RoutesName.login,
             (route) => false,
           );
-        }
+        } else if (state is SignUpError) {
+          final message = state.message;
 
-        if (state is AuthError) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(state.message)));
+          if (message is List) {
+            final text = (message as List).join('\n');
+
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(text)));
+          } else {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(message.toString())));
+          }
         }
       },
       child: Scaffold(
@@ -66,88 +75,146 @@ class _SignUpPageState extends State<SignUpPage> {
             icon: Icon(Icons.arrow_back_ios_new),
           ),
         ),
-        body: Padding(
-          padding: AppPadding.horizontalPagePaddingAndTop,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(AppStringsAuth.createYourAccountAndEnjoyTheBestServices),
-              AppTextField(
-                label: 'Name',
-                hint: AppStringsAuth.enterYourName,
-                controller: nameController,
-              ),
-              AppTextField(
-                label: 'UserName',
-                hint: AppStringsAuth.enterYourUserName,
-                controller: usernameController,
-              ),
+        body: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            padding: AppPadding.horizontalPagePaddingAndTop,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(AppStringsAuth.createYourAccountAndEnjoyTheBestServices),
+                AppTextField(
+                  label: 'Name',
+                  hint: AppStringsAuth.enterYourName,
+                  controller: nameController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "This field is required";
+                    }
+                    return null;
+                  },
+                ),
+                AppTextField(
+                  label: 'UserName',
+                  hint: AppStringsAuth.enterYourUserName,
+                  controller: usernameController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "This field is required";
+                    }
+                    return null;
+                  },
+                ),
 
-              AppTextField(
-                label: 'E-mail',
-                hint: AppStringsAuth.hintEmailExample,
-                prefixIcon: const Icon(Icons.email_outlined),
-                controller: emailController,
-              ),
-              AppTextField(
-                label: 'Password',
-                hint: AppStringsAuth.passwordExample,
-                prefixIcon: const Icon(Icons.lock_outline),
-                suffixIcon: Icon(Icons.visibility_off),
-                controller: passwordController,
-              ),
-              AppTextField(
-                label: 'Hourly Rate ',
-                hint: '\$50',
-                suffixIcon: Icon(Icons.monetization_on_outlined),
-                controller: watchCostController,
-              ),
-              Padding(
-                padding: AppPadding.elevatedButtonPadding,
-                child: BlocBuilder<AuthBloc, AuthState>(
-                  builder: (context, state) {
-                    if (state is AuthLoading) {
-                      return const Center(child: CircularProgressIndicator());
+                AppTextField(
+                  label: 'E-mail',
+                  hint: AppStringsAuth.hintEmailExample,
+                  prefixIcon: const Icon(Icons.email_outlined),
+                  controller: emailController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "This field is required";
                     }
 
-                    return AppElevatedButton(
-                      label: AppStringsAuth.signUp,
-                      onPressed: () async {
-                        context.read<AuthBloc>().add(
-                          SignUpEvent(
-                            name: nameController.text.trim(),
-                            username: usernameController.text.trim(),
-                            email: emailController.text.trim(),
-                            password: passwordController.text.trim(),
-                            watchCost: watchCostController.text.trim(),
-                          ),
-                        );
-                        SharedPreferences prefs =
-                            await SharedPreferences.getInstance();
-                        prefs.setString(
-                          'username',
-                          usernameController.text.trim(),
-                        );
-                      },
+                    final emailRegex = RegExp(
+                      r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
                     );
+
+                    if (!emailRegex.hasMatch(value)) {
+                      return "Please enter a valid email";
+                    }
+
+                    return null;
                   },
                 ),
-              ),
-              Align(
-                alignment: Alignment.center,
-                child: AppRichText(
-                  text: AppStringsAuth.doYouHaveAnAccount,
-                  actionText: AppStringsAuth.logIn,
-                  onTap: () {
-                    Navigator.pushNamedAndRemoveUntil(
-                      context,
-                      RoutesName.login,
-                      (route) => false,
-                    );
+                AppTextField(
+                  label: 'Password',
+                  hint: AppStringsAuth.passwordExample,
+                  prefixIcon: const Icon(Icons.lock_outline),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      obscureText
+                          ? Icons.visibility_off_outlined
+                          : Icons.visibility_outlined,
+                    ),
+                    onPressed: () {
+                      obscureText = !obscureText;
+                      setState(() {});
+                    },
+                  ),
+                  controller: passwordController,
+                  obscureText: obscureText,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "This field is required";
+                    }
+                    if (value.length < 8) {
+                      return "Password must be at least 8 characters";
+                    }
+                    return null;
                   },
                 ),
-              ),
-            ],
+                AppTextField(
+                  label: 'Hourly Rate ',
+                  hint: '\$50',
+                  suffixIcon: Image.asset('assets/images/iconMony.png'),
+                  controller: watchCostController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return "This field is required";
+                    }
+                    return null;
+                  },
+                ),
+
+                Padding(
+                  padding: AppPadding.elevatedButtonPadding,
+                  child: BlocBuilder<AuthBloc, AuthState>(
+                    builder: (context, state) {
+                      if (state is AuthLoading) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+
+                      return AppElevatedButton(
+                        label: AppStringsAuth.signUp,
+                        isLoading: state is AuthLoading,
+                        onPressed: state is AuthLoading
+                            ? null
+                            : () {
+                                if (_formKey.currentState!.validate()) {
+                                  context.read<AuthBloc>().add(
+                                    SignUpEvent(
+                                      name: nameController.text.trim(),
+                                      username: usernameController.text.trim(),
+                                      email: emailController.text.trim(),
+                                      password: passwordController.text.trim(),
+                                      watchCost: watchCostController.text
+                                          .trim(),
+                                    ),
+                                  );
+                                }
+                              },
+                      );
+                    },
+                  ),
+                ),
+
+                Align(
+                  alignment: Alignment.center,
+                  child: AppRichText(
+                    text: AppStringsAuth.doYouHaveAnAccount,
+                    actionText: AppStringsAuth.logIn,
+                    onTap: () {
+                      Navigator.pushNamedAndRemoveUntil(
+                        context,
+                        RoutesName.login,
+                        (route) => false,
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -12,6 +12,7 @@ class AppTextField extends StatelessWidget {
   final Widget? prefixIcon;
   final Widget? suffixIcon;
   final int maxLines;
+  final String? errorText;
 
   const AppTextField({
     super.key,
@@ -24,6 +25,7 @@ class AppTextField extends StatelessWidget {
     this.prefixIcon,
     this.suffixIcon,
     this.maxLines = 1,
+    this.errorText,
   });
 
   static const Color _iconColor = ColorManager.primary; // primary ثابت
@@ -53,7 +55,7 @@ class AppTextField extends StatelessWidget {
           cursorColor: ColorManager.primary,
           decoration: InputDecoration(
             hintText: hint,
-
+            errorText: errorText,
             floatingLabelBehavior: FloatingLabelBehavior.always,
 
             contentPadding: const EdgeInsets.symmetric(
