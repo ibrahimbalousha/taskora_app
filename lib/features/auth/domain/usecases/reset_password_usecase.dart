@@ -10,12 +10,10 @@ class ResetPasswordUseCase {
   Future<Either<Failure, Unit>> call({
     required String email,
     required String newPassword,
-    required String resetCode,
   }) {
     return repository.resetPassword(
       email: email,
       newPassword: newPassword,
-      resetCode: resetCode,
     );
   }
 }

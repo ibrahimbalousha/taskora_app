@@ -8,11 +8,9 @@ class VerifyResetCodeUseCase {
   VerifyResetCodeUseCase(this.repository);
 
   Future<Either<Failure, bool>> call({
-    required String email,
-    required String code,
+    required int code,
   }) {
     return repository.verifyResetCode(
-      email: email,
       code: code,
     );
   }
