@@ -1,7 +1,7 @@
 import 'package:equatable/equatable.dart';
 
 abstract class Failure extends Equatable {
-  final String message;
+  final dynamic message;
 
   const Failure(this.message);
 
@@ -12,7 +12,6 @@ abstract class Failure extends Equatable {
 class OfflineFailure extends Failure {
   const OfflineFailure(super.message);
 }
-
 class ServerFailure extends Failure {
   const ServerFailure(super.message);
 }
