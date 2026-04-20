@@ -70,6 +70,11 @@ class AppStringsAuth {
   AppStringsAuth._();
 
   static const String changePassword = 'Change Password';
+  static const String yourNewPasswordMustBeDifferentFromThePreviousNumber =
+      'Your new password must be different from the previous number ';
+
+  static const String greatNewPasswoed = 'Great New Passwoed';
+
   static const String hintEmailExample = 'noorjber@gmail.com';
   static const String passwordExample = '********';
 
