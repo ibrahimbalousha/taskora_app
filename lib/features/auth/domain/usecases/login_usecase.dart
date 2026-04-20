@@ -11,12 +11,10 @@ class LoginUseCase {
   Future<Either<Failure, AuthToken>> call({
     required String email,
     required String password,
-    required String username,
   }) {
     return repository.login(
       email: email,
       password: password,
-      username: username,
     );
   }
 }

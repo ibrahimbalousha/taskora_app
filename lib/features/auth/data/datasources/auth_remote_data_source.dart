@@ -2,14 +2,12 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import 'package:dartz/dartz.dart';
+import 'package:taskora_app/core/error/exception.dart';
 import 'package:taskora_app/features/auth/domain/entities/auth_token.dart';
+import 'package:taskora_app/features/auth/domain/entities/user.dart';
 
 abstract class AuthRemoteDataSource {
-  Future<AuthToken> login({
-    required String email,
-    required String password,
-    required String username,
-  });
+  Future<AuthToken> login({required String email, required String password});
   Future<Unit> signUp({
     required String name,
     required String username,
@@ -18,16 +16,12 @@ abstract class AuthRemoteDataSource {
     required String watchCost,
   });
 
-  Future<Unit> forgotPassword({
-    required String email,
-    required String name,
-    required String username,
-  });
+  Future<User> forgotPassword({required String email});
+  Future<bool> verifyResetCode({required int code});
 
   Future<Unit> resetPassword({
     required String email,
     required String newPassword,
-    required String resetCode,
   });
 }
 
@@ -38,46 +32,36 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   Future<AuthToken> login({
     required String email,
     required String password,
-    required String username,
   }) async {
     final url = Uri.parse('https://api.mohammedzomlot.dev/user/login');
 
     final response = await _client.post(
       url,
       headers: {'Content-Type': 'application/json'},
-      body: json.encode({
-        'email': email,
-        'password': password,
-        'username': username,
-      }),
+      body: json.encode({'email': email, 'password': password}),
     );
+    final data = json.decode(response.body);
 
     if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      return AuthToken(token: data['token']);
+      return AuthToken(token: data['token'], watchCost: data['WatchCost']);
     } else {
-      throw Exception('Login failed');
+      throw ServerException(data['message']);
     }
   }
 
   @override
-  Future<Unit> forgotPassword({
-    required String email,
-    required String name,
-    required String username,
-  }) async {
-    final url = Uri.parse(
-      'https://api.mohammedzomlot.dev/project/forgotPassword',
-    );
+  Future<User> forgotPassword({required String email}) async {
+    final url = Uri.parse('https://api.mohammedzomlot.dev/user/forgotPassword');
     final response = await _client.post(
       url,
       headers: {'Content-Type': 'application/json'},
-      body: json.encode({'email': email, 'name': name, 'username': username}),
+      body: json.encode({'email': email}),
     );
+    final data = json.decode(response.body);
+
     if (response.statusCode == 200 || response.statusCode == 201) {
-      return unit;
+      return User(email: data['user']['email'], code: data['user']['code']);
     } else {
-      final data = json.decode(response.body);
       throw Exception(data['message'] ?? 'forgotPassword failed');
     }
   }
@@ -86,10 +70,21 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   Future<Unit> resetPassword({
     required String email,
     required String newPassword,
-    required String resetCode,
-  }) {
-    // TODO: implement resetPassword
-    throw UnimplementedError();
+  }) async {
+    final url = Uri.parse('https://api.mohammedzomlot.dev/user/resetPassword');
+
+    final response = await _client.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({'email': email, 'newPassword': newPassword}),
+    );
+
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      return unit;
+    } else {
+      final data = json.decode(response.body);
+      throw Exception(data['message'] ?? 'Reset password failed');
+    }
   }
 
   @override
@@ -100,7 +95,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     required String password,
     required String watchCost,
   }) async {
-    final url = Uri.parse('https://api.mohammedzomlot.dev/auth/signup');
+    final url = Uri.parse('https://api.mohammedzomlot.dev/user/signup');
 
     final response = await _client.post(
       url,
@@ -118,7 +113,33 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       return unit;
     } else {
       final data = json.decode(response.body);
-      throw Exception(data['message'] ?? 'Sign up failed');
+
+      if (data['errors'] != null && data['errors'] is List) {
+        throw ServerException(data['errors']); // 🔥 List
+      } else {
+        throw ServerException(data['message'] ?? 'Something went wrong');
+      }
+    }
+  }
+
+  @override
+  Future<bool> verifyResetCode({required int code}) async {
+    final url = Uri.parse(
+      'https://api.mohammedzomlot.dev/user/checkCodeController',
+    );
+
+    final response = await _client.post(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({'code': code}),
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return data['status'] ?? false; // true إذا تحقق الكود
+    } else {
+      final data = json.decode(response.body);
+      throw Exception(data['message'] ?? 'Verify reset code failed');
     }
   }
 }
