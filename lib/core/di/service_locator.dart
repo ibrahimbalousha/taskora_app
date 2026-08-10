@@ -1,5 +1,13 @@
 import 'package:get_it/get_it.dart';
+import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:taskora_app/features/main_layout/presentation/cubit/main_layout_cubit.dart';
+import 'package:taskora_app/features/projects/data/datasources/projects_remote_data_source.dart';
+import 'package:taskora_app/features/projects/data/repositories_impl/project_repositories_impl.dart';
+import 'package:taskora_app/features/projects/domain/repositories/project_repository.dart';
+import 'package:taskora_app/features/projects/domain/usecases/get_projects_use_case.dart';
+import 'package:taskora_app/features/projects/domain/usecases/project_add_ues_case.dart';
+import 'package:taskora_app/features/projects/presentation/cubit/project_cubit.dart';
 import 'package:taskora_app/features/splash_onboarding/domain/usecases/check_login_status_usecase.dart';
 
 import '../../features/auth/data/datasources/auth_remote_data_source.dart';
@@ -22,36 +30,36 @@ import '../../features/splash_onboarding/presentation/bloc/splash_onboarding_blo
 final GetIt locator = GetIt.instance;
 
 Future<void> setupLocator() async {
-  // SharedPreferences
+  // Core dependencies
   final prefs = await SharedPreferences.getInstance();
+
   locator.registerLazySingleton<SharedPreferences>(() => prefs);
 
+  locator.registerLazySingleton<http.Client>(() => http.Client());
+
   // Splash Onboarding
-  // ========================
-  // DataSource
   locator.registerLazySingleton<SplashOnboardingLocalDataSource>(
     () => SplashOnboardingLocalDataSourceImpl(locator<SharedPreferences>()),
   );
 
-  // Repository
   locator.registerLazySingleton<SplashOnboardingRepository>(
     () => SplashOnboardingRepositoryImpl(
       locator<SplashOnboardingLocalDataSource>(),
     ),
   );
 
-  // UseCases
   locator.registerLazySingleton<CheckOnboardingStatusUseCase>(
     () => CheckOnboardingStatusUseCase(locator<SplashOnboardingRepository>()),
   );
+
   locator.registerLazySingleton<CompleteOnboardingUseCase>(
     () => CompleteOnboardingUseCase(locator<SplashOnboardingRepository>()),
   );
+
   locator.registerLazySingleton<CheckLoginStatusUseCase>(
     () => CheckLoginStatusUseCase(locator<SplashOnboardingRepository>()),
   );
 
-  // Bloc
   locator.registerFactory<SplashOnboardingBloc>(
     () => SplashOnboardingBloc(
       checkStatus: locator<CheckOnboardingStatusUseCase>(),
@@ -61,35 +69,37 @@ Future<void> setupLocator() async {
   );
 
   // Auth
-  // ========================
-  // Remote DataSource
   locator.registerLazySingleton<AuthRemoteDataSource>(
-    () => AuthRemoteDataSourceImpl(),
+    () => AuthRemoteDataSourceImpl(client: locator<http.Client>()),
   );
 
-  // Repository
   locator.registerLazySingleton<AuthRepository>(
-    () => AuthRepositoryImpl(remoteDataSource: locator<AuthRemoteDataSource>()),
+    () => AuthRepositoryImpl(
+      remoteDataSource: locator<AuthRemoteDataSource>(),
+      sharedPreferences: locator<SharedPreferences>(),
+    ),
   );
 
-  // UseCases
   locator.registerLazySingleton<LoginUseCase>(
     () => LoginUseCase(locator<AuthRepository>()),
   );
+
   locator.registerLazySingleton<ForgotPasswordUseCase>(
     () => ForgotPasswordUseCase(locator<AuthRepository>()),
   );
+
   locator.registerLazySingleton<VerifyResetCodeUseCase>(
     () => VerifyResetCodeUseCase(locator<AuthRepository>()),
   );
+
   locator.registerLazySingleton<ResetPasswordUseCase>(
     () => ResetPasswordUseCase(locator<AuthRepository>()),
   );
+
   locator.registerLazySingleton<SignupUseCase>(
     () => SignupUseCase(locator<AuthRepository>()),
   );
 
-  // Bloc
   locator.registerFactory<AuthBloc>(
     () => AuthBloc(
       loginUseCase: locator<LoginUseCase>(),
@@ -99,4 +109,32 @@ Future<void> setupLocator() async {
       signUpUseCase: locator<SignupUseCase>(),
     ),
   );
+
+  // Projects
+  locator.registerLazySingleton<ProjectsRemoteDataSource>(
+    () => ProjectsRemoteDataSourceImpl(client: locator<http.Client>()),
+  );
+  locator.registerLazySingleton<ProjectRepository>(
+    () => ProjectRepositoriesImpl(
+      remoteDataSource: locator<ProjectsRemoteDataSource>(),
+      sharedPreferences: locator<SharedPreferences>(),
+    ),
+  );
+
+  locator.registerLazySingleton<GetProjectsUseCase>(
+    () => GetProjectsUseCase(locator<ProjectRepository>()),
+  );
+  locator.registerLazySingleton<ProjectAddUesCase>(
+    () => ProjectAddUesCase(repositories: locator<ProjectRepository>()),
+  );
+
+  locator.registerFactory<ProjectCubit>(
+    () => ProjectCubit(
+      getProjectsUseCase: locator<GetProjectsUseCase>(),
+      projectAddUesCase: locator<ProjectAddUesCase>(),
+    ),
+  );
+
+  // Main Layout
+  locator.registerFactory<MainLayoutCubit>(() => MainLayoutCubit());
 }

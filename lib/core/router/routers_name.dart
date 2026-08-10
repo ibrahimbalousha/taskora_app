@@ -7,5 +7,9 @@ class RoutesName {
   static const String onboardingPage = '/onboardingPage';
   static const String flutterSplashPage = '/flutterSplashPage';
   static const String greatNewPasswoed = '/greatNewPasswoed';
+    static const String createProject = '/createProject';
+        static const String projectDetails = '/projectDetails';
+
+
 
 }
