@@ -6,6 +6,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final List<Widget>? actions;
   final Widget? leading;
   final String? logoAsset;
+  final bool? centerTitle;
+  final bool? isLoding;
 
   const CustomAppBar({
     super.key,
@@ -13,12 +15,14 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.actions,
     this.leading,
     this.logoAsset,
+    this.centerTitle,
+    this.isLoding,
   });
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      centerTitle: true,
+      centerTitle: centerTitle ?? true,
       leading: leading,
       title: logoAsset != null
           ? Row(
@@ -31,7 +35,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           : Text(
               title,
               style: TextStyle(
-                fontSize: AppSizes.s5,
+                fontSize: AppSizes.fz5,
                 fontWeight: FontWeight.bold,
               ),
             ),
