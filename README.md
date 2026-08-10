@@ -1,16 +1,32 @@
-# taskora_app
+# Taskora
 
-A new Flutter project.
+Taskora is a Flutter-based project and task management application designed with a clean and scalable architecture.
 
-## Getting Started
+The project focuses on building a maintainable mobile application structure using modern Flutter development practices.
 
-This project is a starting point for a Flutter application.
+## Features
 
-A few resources to get you started if this is your first Flutter project:
+- User Authentication using Firebase Authentication
+- Project Management
+- Create and View Projects
+- REST API Integration
+- BLoC / Cubit State Management
+- Dependency Injection using GetIt
+- Reusable UI Components
+- Clean Architecture Structure
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Tech Stack
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Flutter
+- Dart
+- Flutter BLoC
+- Firebase Authentication
+- REST APIs
+- GetIt
+- Equatable
+- Shared Preferences
+- Git & GitHub
+
+## Architecture
+
+The project follows Clean Architecture principles with a clear separation of responsibilities:
