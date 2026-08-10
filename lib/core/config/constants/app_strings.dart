@@ -14,11 +14,13 @@ class AppStringsCommon {
   static const String createTask = 'Create Task';
   static const String delete = 'Delete';
   static const String done = 'Done';
-  static const String dontReceiveCodeResendCode = 'Don’t receive code ? Resend code';
+  static const String dontReceiveCode = 'Don’t receive code ? ';
+  static const String resendCode = 'Resend code';
   static const String eMail = 'E-mail';
   static const String enterCode = 'Enter Code';
   static const String estHours = 'Est :Hours';
-  static const String followYourProjectsWithEase = 'Follow your projects with ease';
+  static const String followYourProjectsWithEase =
+      'Follow your projects with ease';
   static const String getStarted = 'Get Started';
   static const String high = 'High';
   static const String hourlyRate = 'Hourly Rate';
@@ -45,7 +47,8 @@ class AppStringsCommon {
   static const String totalEarnings = 'TOTAL EARNINGS';
   static const String tryAgain = 'Try again';
   static const String verifyEmail = 'Verify Email';
-  static const String youCanAdjustThisPriceForThisProjectOnlyWithoutAffectingTheOverallSettings =
+  static const String
+  youCanAdjustThisPriceForThisProjectOnlyWithoutAffectingTheOverallSettings =
       'You can adjust this price for this project only without affecting the overall settings.';
   static const String manageAllYourProjectsAndTasksFromOnePlace =
       '“Manage all your projects and tasks from one place.”';
@@ -54,10 +57,12 @@ class AppStringsCommon {
 class AppStringsOnboarding {
   AppStringsOnboarding._();
 
-  static const String calculateYourProfitsEasily = 'Calculate your profits easily';
+  static const String calculateYourProfitsEasily =
+      'Calculate your profits easily';
   static const String getStarted = 'Get Started';
   static const String skip = 'Skip';
-  static const String recordTheHoursWorkdLetTheAppCalculateTheAmountDueAutomatically =
+  static const String
+  recordTheHoursWorkdLetTheAppCalculateTheAmountDueAutomatically =
       '“Record the hours wor...d let the app calculate the amount due automatically.”';
 }
 
@@ -65,29 +70,39 @@ class AppStringsAuth {
   AppStringsAuth._();
 
   static const String changePassword = 'Change Password';
+  static const String yourNewPasswordMustBeDifferentFromThePreviousNumber =
+      'Your new password must be different from the previous number ';
+
+  static const String greatNewPasswoed = 'Great New Passwoed';
+
+  static const String hintEmailExample = 'noorjber@gmail.com';
+  static const String passwordExample = '********';
+
   static const String confirmPassword = 'Confirm Password';
   static const String continueText = 'Continue';
   static const String correctCode = 'Correct code';
   static const String createAAccount = 'Create a Account';
   static const String createYourAccountAndEnjoyTheBestServices =
       'Create your account and enjoy the best services';
-  static const String doYouHaveAnAccountLogIn = 'Do you have an account? Log in';
-  static const String dontHaveAnAccountCreateAnAccount =
-      'Don\'t have an account? Create an account';
+  static const String doYouHaveAnAccount = 'Do you have an account? ';
+  static const String dontHaveAnAccount = 'Don\'t have an account? ';
+  static const String createAnAccount = 'Create an account';
+
   static const String emailIsIncorrectPleaseDoubleCheckYourCredentials =
       'Email is incorrect . Please double -check your credentials .';
   static const String enterYourEmailAddress = 'Enter your email address';
   static const String enterYourName = 'Enter Your Name';
+  static const String enterYourUserName = 'Enter Your UserName';
   static const String forgetPassword = 'Forget Password ?';
   static const String forgotPassword = 'Forgot Password?';
   static const String logIn = 'Log In';
   static const String loginFailed = 'login failed';
   static const String name = 'Name';
-  static const String pleaseCheakYourEmailForTheessCorrectlySoThatYouCanResetYourPassword =
+  static const String
+  pleaseCheakYourEmailForTheessCorrectlySoThatYouCanResetYourPassword =
       'Please cheak your email for the...ess correctly so that you can reset your password.';
   static const String pleaseLoginOrSignUpToContinueOurOpp =
       'Please login or sign up to continue our opp';
-  static const String resendCode = 'Resend code';
   static const String signUp = 'Sign Up';
   static const String verifyEmail = 'Verify Email';
   static const String welcomeBack = 'Welcome Back ! 👋';
@@ -123,11 +138,13 @@ class AppStringsHome {
   static const String remainingTasks = 'Remaining tasks';
   static const String seeAll = 'See All';
   static const String skipForNew = 'Skip for new';
-  static const String tasksYouCreateWillAppearHere = 'Tasks you create will appear here';
+  static const String tasksYouCreateWillAppearHere =
+      'Tasks you create will appear here';
   static const String upcomingTasks = 'Upcoming Tasks';
   static const String welcome = 'Welcome 👋';
   static const String workingHours = 'WORKING HOURS';
-  static const String youHaventAddedAnyProjectsYetStartByCreatingYourFirstProject =
+  static const String
+  youHaventAddedAnyProjectsYetStartByCreatingYourFirstProject =
       'You haven\'t added any Projects yet . Start by creating your first project .';
 }
 
@@ -165,10 +182,12 @@ class AppStringsProjects {
 class AppStringsTasks {
   AppStringsTasks._();
 
-  static const String addDetailsLinksOrSubTasks = 'Add details ,links,or sub -tasks';
+  static const String addDetailsLinksOrSubTasks =
+      'Add details ,links,or sub -tasks';
   static const String areYouSure = 'Are You Sure ?';
   static const String cancel = 'Cancel';
-  static const String createYourFirstTasksToGetRolling = 'Create your first tasks to get rolling .';
+  static const String createYourFirstTasksToGetRolling =
+      'Create your first tasks to get rolling .';
   static const String delete = 'Delete';
   static const String description = 'Description';
   static const String editTask = 'Edit task';
@@ -180,7 +199,8 @@ class AppStringsTasks {
   static const String status = 'Status';
   static const String taskDetails = 'Task Details';
   static const String taskStatus = 'TASK STATUS';
-  static const String thisActionCannotBeUndoneThisTaskAndAllItsAssociatedCommentsAndFilesWillBePermanentlyRemoved =
+  static const String
+  thisActionCannotBeUndoneThisTaskAndAllItsAssociatedCommentsAndFilesWillBePermanentlyRemoved =
       'This action cannot be undone . This Task and all its associated comments and files will be permanently removed .';
   static const String whatNeedToBeDone = 'What need to be done ?';
 }
@@ -202,14 +222,16 @@ class AppSampleText {
   static const String clientAbCompany = 'Client : AB Company';
   static const String clientFashionnova = 'Client : FashionNova';
   static const String clientNaCompany = 'Client : NA Company';
-  static const String computerOverhaulOfTheMainECommercePlatformIncludingDashboardIntegrationAndMobileResponsivenessImprovements =
+  static const String
+  computerOverhaulOfTheMainECommercePlatformIncludingDashboardIntegrationAndMobileResponsivenessImprovements =
       'Computer overhaul of the main e- commerce platform including ...ashboard integration, and mobile responsiveness improvements .';
   static const String designLoginScreen = 'Design login Screen';
   static const String eCommerceIntegration = 'E-commerce Integration';
   static const String freelancerApp = 'Freelancer App';
   static const String implementStripeApi = 'Implement Stripe API';
   static const String improveDashboardUx = 'Improve Dashboard UX';
-  static const String integrateStripePaymentGatewayIncludingPaymentIntentsCheckoutFlowAndErrorHandlingForFailedTransactions =
+  static const String
+  integrateStripePaymentGatewayIncludingPaymentIntentsCheckoutFlowAndErrorHandlingForFailedTransactions =
       'Integrate Stripe payment gateway including payment intents , checkout flow, and error handling for failed transactions.';
   static const String mobileAppDesign = 'Mobile App design';
   static const String oct242025 = 'Oct 24 ,2025';

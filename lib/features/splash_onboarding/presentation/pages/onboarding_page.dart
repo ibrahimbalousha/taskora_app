@@ -3,10 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:taskora_app/core/config/constants/app_sizes.dart';
 import 'package:taskora_app/core/config/constants/color_manager.dart';
 import 'package:taskora_app/core/config/constants/image_path.dart';
-import 'package:taskora_app/core/config/widgets/buttons/%D9%90appElevatedButton.dart';
+import 'package:taskora_app/core/config/widgets/buttons/app_elevated_button.dart';
 import 'package:taskora_app/core/config/widgets/buttons/custom_text_button.dart';
+import 'package:taskora_app/core/router/routers_name.dart';
 import 'package:taskora_app/features/splash_onboarding/presentation/bloc/splash_onboarding_state.dart';
-import 'package:taskora_app/features/splash_onboarding/presentation/pages/home_page.dart';
 
 import '../bloc/splash_onboarding_bloc.dart';
 import '../bloc/splash_onboarding_event.dart';
@@ -60,9 +60,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
     return BlocListener<SplashOnboardingBloc, SplashOnboardingState>(
       listener: (context, state) {
         if (state is NavigateToHome) {
-          Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (_) => const HomePage()),
-          );
+          Navigator.of(context).pushReplacementNamed(RoutesName.home);
+        } else if (state is ShowLoginPage) {
+          Navigator.of(context).pushReplacementNamed(RoutesName.login);
         }
       },
       child: Scaffold(
@@ -177,7 +177,7 @@ class _OnboardingSlide extends StatelessWidget {
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
               color: inverted
-                  ? theme.colorScheme.onPrimary.withOpacity(0.85)
+                  ? theme.colorScheme.onPrimary.withValues(alpha: 0.85)
                   : ColorManager.textSecondary,
             ),
           ),
@@ -217,8 +217,8 @@ class _DotsIndicator extends StatelessWidget {
                       ? theme.colorScheme.onPrimary
                       : theme.colorScheme.primary)
                 : (inverted
-                      ? theme.colorScheme.onPrimary.withOpacity(0.35)
-                      : theme.colorScheme.onSurface.withOpacity(0.2)),
+                      ? theme.colorScheme.onPrimary.withValues(alpha: 0.35)
+                      : theme.colorScheme.onSurface.withValues(alpha: 0.2)),
 
             borderRadius: BorderRadius.circular(999),
           ),

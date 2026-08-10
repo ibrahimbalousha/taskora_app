@@ -15,4 +15,15 @@ class SplashOnboardingRepositoryImpl implements SplashOnboardingRepository {
   Future<void> setOnboardingCompleted() {
     return _local.setOnboardingCompleted();
   }
+
+  @override
+  Future<bool> isLoggedIn() {
+    return _local.isLoggedIn();
+  }
+
+  @override
+  Future<void> logout() {
+    // TODO: implement logout
+    throw UnimplementedError();
+  }
 }

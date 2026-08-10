@@ -1,48 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:taskora_app/core/di/service_locator.dart';
+import 'package:taskora_app/core/router/router.dart';
+import 'package:taskora_app/core/router/routers_name.dart';
 import 'package:taskora_app/core/theme/light_theme.dart';
-
-import 'package:taskora_app/features/splash_onboarding/data/datasources/splash_onboarding_local_data_source.dart';
-import 'package:taskora_app/features/splash_onboarding/data/repositories/splash_onboarding_repository_impl.dart';
-import 'package:taskora_app/features/splash_onboarding/domain/usecases/check_onboarding_status_usecase.dart';
-import 'package:taskora_app/features/splash_onboarding/domain/usecases/complete_onboarding_usecase.dart';
+import 'package:taskora_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:taskora_app/features/splash_onboarding/presentation/bloc/splash_onboarding_bloc.dart';
-import 'package:taskora_app/features/splash_onboarding/presentation/pages/flutter_splash_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await setupLocator();
 
-  final prefs = await SharedPreferences.getInstance();
-
-  final localDataSource = SplashOnboardingLocalDataSourceImpl(prefs);
-  final repository = SplashOnboardingRepositoryImpl(localDataSource);
-
-  final checkStatus = CheckOnboardingStatusUseCase(repository);
-  final completeOnboarding = CompleteOnboardingUseCase(repository);
-
-  final splashOnboardingBloc = SplashOnboardingBloc(
-    checkStatus: checkStatus,
-    completeOnboarding: completeOnboarding,
+  runApp(
+    MyApp(
+      splashBloc: locator<SplashOnboardingBloc>(),
+      authBloc: locator<AuthBloc>(),
+    ),
   );
-
-  runApp(MyApp(bloc: splashOnboardingBloc));
 }
 
 class MyApp extends StatelessWidget {
-  final SplashOnboardingBloc bloc;
+  final SplashOnboardingBloc splashBloc;
+  final AuthBloc authBloc;
 
-  const MyApp({super.key, required this.bloc});
+  const MyApp({super.key, required this.splashBloc, required this.authBloc});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider.value(
-      value: bloc,
-      child:  MaterialApp(
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider.value(value: splashBloc),
+        BlocProvider.value(value: authBloc),
+      ],
+      child: MaterialApp(
+        onGenerateRoute: AppRouter.generateRoute,
+        initialRoute: RoutesName.flutterSplashPage,
         theme: LightTheme.theme,
         debugShowCheckedModeBanner: false,
         title: 'Taskora',
-        home: FlutterSplashPage(),
       ),
     );
   }

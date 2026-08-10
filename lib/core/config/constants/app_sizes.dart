@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class AppSizes {
   // Base grid
   static const double grid = 4;
@@ -12,6 +14,12 @@ class AppSizes {
   static const double s10 = 40;
   static const double s12 = 48;
 
+  //font Size
+  static const double fz2 = 12;
+  static const double fz3 = 16;
+  static const double fz4 = 18;
+  static const double fz5 = 22;
+
   // Border radius
   static const double r8 = 8;
   static const double r12 = 12;
@@ -20,7 +28,7 @@ class AppSizes {
 
   // Text button sized
   static const double customTextButtonSized = 12;
-  static const double textButtonSized = 14;
+  static const double textButtonSized = 16;
 
   // Icon sizes
   static const double i16 = 16;
@@ -36,4 +44,24 @@ class AppSizes {
 
   // Layout constraints
   static const double maxContentWidth = 560; // للموبايل/تابلت إن لزم
+}
+
+class AppPadding {
+  // static const EdgeInsets topPagePadding = EdgeInsets.only(top: 16);
+  static const EdgeInsets topWidgetPadding = EdgeInsets.only(top: 16);
+  static const EdgeInsets pinputPadding = EdgeInsets.only(top: 24, bottom: 8);
+
+  static const EdgeInsets elevatedButtonPadding = EdgeInsets.only(
+    top: 24,
+    bottom: 8,
+  );
+
+  static const EdgeInsets horizontalPagePaddingAndTop = EdgeInsets.only(
+    left: 20,
+    right: 20,
+    top: 16,
+  );
+  static const EdgeInsets horizontalPagePadding = EdgeInsets.symmetric(
+    horizontal: 20,
+  );
 }
