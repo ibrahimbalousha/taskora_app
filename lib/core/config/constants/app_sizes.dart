@@ -18,6 +18,7 @@ class AppSizes {
   static const double fz2 = 12;
   static const double fz3 = 16;
   static const double fz4 = 18;
+  static const double fz5 = 22;
 
   // Border radius
   static const double r8 = 8;
@@ -59,5 +60,8 @@ class AppPadding {
     left: 20,
     right: 20,
     top: 16,
+  );
+  static const EdgeInsets horizontalPagePadding = EdgeInsets.symmetric(
+    horizontal: 20,
   );
 }
