@@ -9,8 +9,12 @@ import 'package:taskora_app/features/auth/domain/repositories/auth_repository.da
 
 class AuthRepositoryImpl implements AuthRepository {
   final AuthRemoteDataSource remoteDataSource;
+  final SharedPreferences sharedPreferences;
 
-  AuthRepositoryImpl({required this.remoteDataSource});
+  AuthRepositoryImpl({
+    required this.remoteDataSource,
+    required this.sharedPreferences,
+  });
   @override
   Future<Either<Failure, AuthToken>> login({
     required String email,
@@ -22,14 +26,13 @@ class AuthRepositoryImpl implements AuthRepository {
         password: password,
       );
 
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.setString('token', authToken.token);
-      await prefs.setInt('WatchCost', authToken.watchCost);
+      await sharedPreferences.setString('token', authToken.token);
+      await sharedPreferences.setInt('WatchCost', authToken.watchCost);
 
       return Right(authToken);
     } catch (e) {
       if (e is ServerException) {
-        return Left(ServerFailure(e.message)); 
+        return Left(ServerFailure(e.message));
       }
 
       return const Left(ServerFailure('Something went wrong'));

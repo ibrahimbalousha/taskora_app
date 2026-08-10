@@ -26,16 +26,18 @@ abstract class AuthRemoteDataSource {
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
-  static final http.Client _client = http.Client();
-
+  final http.Client client;
+  AuthRemoteDataSourceImpl({
+    required this.client,
+  });
   @override
   Future<AuthToken> login({
     required String email,
     required String password,
   }) async {
-    final url = Uri.parse('https://api.mohammedzomlot.dev/user/login');
+    final url = Uri.parse('http://localhost:3500/user/login');
 
-    final response = await _client.post(
+    final response = await client.post(
       url,
       headers: {'Content-Type': 'application/json'},
       body: json.encode({'email': email, 'password': password}),
@@ -51,8 +53,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   @override
   Future<User> forgotPassword({required String email}) async {
-    final url = Uri.parse('https://api.mohammedzomlot.dev/user/forgotPassword');
-    final response = await _client.post(
+    final url = Uri.parse('http://localhost:3500/user/forgotPassword');
+    final response = await client.post(
       url,
       headers: {'Content-Type': 'application/json'},
       body: json.encode({'email': email}),
@@ -71,9 +73,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     required String email,
     required String newPassword,
   }) async {
-    final url = Uri.parse('https://api.mohammedzomlot.dev/user/resetPassword');
+    final url = Uri.parse('http://localhost:3500/user/resetPassword');
 
-    final response = await _client.post(
+    final response = await client.post(
       url,
       headers: {'Content-Type': 'application/json'},
       body: json.encode({'email': email, 'newPassword': newPassword}),
@@ -95,9 +97,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     required String password,
     required String watchCost,
   }) async {
-    final url = Uri.parse('https://api.mohammedzomlot.dev/user/signup');
+    final url = Uri.parse('http://localhost:3500/user/signup');
 
-    final response = await _client.post(
+    final response = await client.post(
       url,
       headers: {'Content-Type': 'application/json'},
       body: json.encode({
@@ -124,11 +126,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   @override
   Future<bool> verifyResetCode({required int code}) async {
-    final url = Uri.parse(
-      'https://api.mohammedzomlot.dev/user/checkCodeController',
-    );
+    final url = Uri.parse('http://localhost:3500/user/checkCodeController');
 
-    final response = await _client.post(
+    final response = await client.post(
       url,
       headers: {'Content-Type': 'application/json'},
       body: json.encode({'code': code}),
