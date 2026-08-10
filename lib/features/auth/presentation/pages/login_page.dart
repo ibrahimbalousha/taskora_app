@@ -9,10 +9,12 @@ import 'package:taskora_app/core/config/widgets/feedback/app_snack_bar.dart';
 import 'package:taskora_app/core/config/widgets/inputs/app_text_field.dart';
 import 'package:taskora_app/core/config/widgets/text/app_rich_text.dart';
 import 'package:taskora_app/core/config/widgets/text/blue_main_text.dart';
+import 'package:taskora_app/core/di/service_locator.dart';
 import 'package:taskora_app/core/router/routers_name.dart';
 import 'package:taskora_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:taskora_app/features/auth/presentation/bloc/auth_event.dart';
 import 'package:taskora_app/features/auth/presentation/bloc/auth_state.dart';
+import 'package:taskora_app/features/projects/presentation/cubit/project_cubit.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -40,17 +42,25 @@ class _LoginPageState extends State<LoginPage> {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is LoginSuccess) {
-          Navigator.pushReplacementNamed(context, RoutesName.home);
+          final projectCubit = locator<ProjectCubit>();
+          projectCubit.getProject();
+
+          Navigator.pushNamedAndRemoveUntil(
+            context,
+            RoutesName.home,
+            (_) => false,
+          );
         } else if (state is LoginError) {
           AppSnackBar.show(context, message: state.message);
         }
       },
       child: Scaffold(
         appBar: CustomAppBar(title: AppStringsAuth.logIn),
-        body: Form(
-          key: _formKey,
-          child: Padding(
-            padding: AppPadding.horizontalPagePaddingAndTop,
+        body: SingleChildScrollView(
+          padding: AppPadding.horizontalPagePaddingAndTop,
+          child: Form(
+            key: _formKey,
+
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
