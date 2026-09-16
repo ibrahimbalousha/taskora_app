@@ -6,6 +6,7 @@ abstract class SplashOnboardingLocalDataSource {
   Future<bool> isOnboardingCompleted();
   Future<void> setOnboardingCompleted();
   Future<bool> isLoggedIn();
+  Future<void> logout();
 }
 
 class SplashOnboardingLocalDataSourceImpl
@@ -24,8 +25,15 @@ class SplashOnboardingLocalDataSourceImpl
     await _prefs.setBool(SplashOnboardingKeys.onboardingCompleted, true);
   }
 
+  @override
   Future<bool> isLoggedIn() async {
     final token = _prefs.getString(SplashOnboardingKeys.token);
     return token != null && token.isNotEmpty;
+  }
+
+  @override
+  Future<void> logout() async {
+    await _prefs.remove(SplashOnboardingKeys.token);
+    await _prefs.remove(SplashOnboardingKeys.watchCost);
   }
 }

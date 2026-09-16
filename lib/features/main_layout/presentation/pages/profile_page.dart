@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:taskora_app/core/config/constants/app_sizes.dart';
 import 'package:taskora_app/core/config/constants/color_manager.dart';
 import 'package:taskora_app/core/config/widgets/app_bars/custom_app_bar.dart';
@@ -9,6 +8,7 @@ import 'package:taskora_app/core/di/service_locator.dart';
 import 'package:taskora_app/core/router/routers_name.dart';
 import 'package:taskora_app/features/main_layout/presentation/pages/widget/statistic_item_profile.dart';
 import 'package:taskora_app/features/projects/presentation/cubit/project_cubit.dart';
+import 'package:taskora_app/features/splash_onboarding/domain/usecases/logout_usecase.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -148,10 +148,7 @@ class ProfilePage extends StatelessWidget {
                 SizedBox(height: 22.h),
                 InkWell(
                   onTap: () async {
-                    final prefs = locator<SharedPreferences>();
-
-                    await prefs.remove('token');
-                    await prefs.remove('WatchCost');
+                    await locator<LogoutUseCase>()();
 
                     if (!context.mounted) return;
 

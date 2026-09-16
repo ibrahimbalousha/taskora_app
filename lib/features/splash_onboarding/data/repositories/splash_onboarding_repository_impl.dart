@@ -23,7 +23,6 @@ class SplashOnboardingRepositoryImpl implements SplashOnboardingRepository {
 
   @override
   Future<void> logout() {
-    // TODO: implement logout
-    throw UnimplementedError();
+    return _local.logout();
   }
 }
