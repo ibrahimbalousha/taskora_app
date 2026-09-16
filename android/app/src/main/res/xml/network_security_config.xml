@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Temporary: allows plain HTTP while the backend is not yet served over
+     HTTPS. Restrict this to a specific domain (or remove it) once it is. -->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true" />
+</network-security-config>
