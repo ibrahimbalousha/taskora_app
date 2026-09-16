@@ -23,6 +23,13 @@ class _GreatNewPasswoedState extends State<GreatNewPasswoed> {
   final _formKey = GlobalKey<FormState>();
 
   @override
+  void dispose() {
+    _passwordController1.dispose();
+    _passwordController2.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return BlocConsumer<AuthBloc, AuthState>(
       listener: (context, state) {
