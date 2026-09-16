@@ -6,7 +6,6 @@ import 'package:taskora_app/features/auth/presentation/pages/login_page.dart';
 import 'package:taskora_app/features/auth/presentation/pages/recover_by_email.dart';
 import 'package:taskora_app/features/auth/presentation/pages/signup_page.dart';
 import 'package:taskora_app/features/auth/presentation/pages/verification_code_page.dart';
-import 'package:taskora_app/features/main_layout/presentation/cubit/main_layout_cubit.dart';
 import 'package:taskora_app/features/main_layout/presentation/pages/main_layout.dart';
 import 'package:taskora_app/features/projects/domain/entities/project_entity.dart';
 import 'package:taskora_app/features/projects/presentation/cubit/project_cubit.dart';
@@ -31,13 +30,8 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const SignUpPage());
       case RoutesName.home:
         return MaterialPageRoute(
-          builder: (_) => MultiBlocProvider(
-            providers: [
-              BlocProvider(create: (_) => locator<MainLayoutCubit>()),
-              BlocProvider(
-                create: (_) => locator<ProjectCubit>()..getProject(),
-              ),
-            ],
+          builder: (_) => BlocProvider(
+            create: (_) => locator<ProjectCubit>(),
             child: const MainLayout(),
           ),
         );
