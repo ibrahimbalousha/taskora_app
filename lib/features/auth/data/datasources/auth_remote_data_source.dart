@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 import 'package:dartz/dartz.dart';
+import 'package:taskora_app/core/config/constants/request_constants.dart';
 import 'package:taskora_app/core/error/exception.dart';
 import 'package:taskora_app/features/auth/domain/entities/auth_token.dart';
 import 'package:taskora_app/features/auth/domain/entities/user.dart';
@@ -35,7 +36,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     required String email,
     required String password,
   }) async {
-    final url = Uri.parse('http://localhost:3500/user/login');
+    final url = Uri.parse('${ApiConstants.baseUrl}/user/login');
 
     final response = await client.post(
       url,
@@ -53,7 +54,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   @override
   Future<User> forgotPassword({required String email}) async {
-    final url = Uri.parse('http://localhost:3500/user/forgotPassword');
+    final url = Uri.parse('${ApiConstants.baseUrl}/user/forgotPassword');
     final response = await client.post(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -73,7 +74,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     required String email,
     required String newPassword,
   }) async {
-    final url = Uri.parse('http://localhost:3500/user/resetPassword');
+    final url = Uri.parse('${ApiConstants.baseUrl}/user/resetPassword');
 
     final response = await client.post(
       url,
@@ -97,7 +98,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     required String password,
     required String watchCost,
   }) async {
-    final url = Uri.parse('http://localhost:3500/user/signup');
+    final url = Uri.parse('${ApiConstants.baseUrl}/user/signup');
 
     final response = await client.post(
       url,
@@ -126,7 +127,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   @override
   Future<bool> verifyResetCode({required int code}) async {
-    final url = Uri.parse('http://localhost:3500/user/checkCodeController');
+    final url = Uri.parse(
+      '${ApiConstants.baseUrl}/user/checkCodeController',
+    );
 
     final response = await client.post(
       url,

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:taskora_app/core/config/constants/request_constants.dart';
 import 'package:taskora_app/features/projects/data/Model/project_model.dart';
 
 abstract class ProjectsRemoteDataSource {
@@ -21,7 +22,7 @@ class ProjectsRemoteDataSourceImpl implements ProjectsRemoteDataSource {
 
   @override
   Future<List<ProjectModel>> getProjacts(String token) async {
-    final url = Uri.parse('http://localhost:3500/see/getProjact');
+    final url = Uri.parse('${ApiConstants.baseUrl}/see/getProjact');
     final response = await client.get(
       url,
       headers: {
@@ -51,7 +52,7 @@ class ProjectsRemoteDataSourceImpl implements ProjectsRemoteDataSource {
     required String clientName,
     required String deadline,
   }) async {
-    final url = Uri.parse('http://localhost:3500/project/add');
+    final url = Uri.parse('${ApiConstants.baseUrl}/project/add');
     final response = await client.post(
       url,
       headers: {
