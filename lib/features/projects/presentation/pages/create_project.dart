@@ -31,6 +31,26 @@ class _CreateProjectState extends State<CreateProject> {
     return selectedDate!.toIso8601String();
   }
 
+  void _submit(BuildContext context) {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    if (deadline == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select delivery date')),
+      );
+      return;
+    }
+
+    context.read<ProjectCubit>().addProject(
+      name: _projectName.text,
+      description: _projectDescription.text,
+      clientName: _client.text,
+      deadline: deadline!,
+    );
+  }
+
   @override
   void dispose() {
     _projectName.dispose();
@@ -50,7 +70,12 @@ class _CreateProjectState extends State<CreateProject> {
           child: Scaffold(
             appBar: CustomAppBar(
               title: 'Create Project',
-              actions: [CustomTextButton(label: 'Save', onPressed: () {})],
+              actions: [
+                CustomTextButton(
+                  label: 'Save',
+                  onPressed: isNotBack ? null : () => _submit(context),
+                ),
+              ],
             ),
 
             body: BlocListener<ProjectCubit, ProjectState>(
@@ -185,35 +210,7 @@ class _CreateProjectState extends State<CreateProject> {
                               isLoading: state is ProjectAddLoading,
                               onPressed: state is ProjectAddLoading
                                   ? null
-                                  : () {
-                                      if (!_formKey.currentState!.validate()) {
-                                        return;
-                                      }
-
-                                      if (deadline == null) {
-                                        ScaffoldMessenger.of(
-                                          context,
-                                        ).showSnackBar(
-                                          const SnackBar(
-                                            content: Text(
-                                              'Please select delivery date',
-                                            ),
-                                          ),
-                                        );
-
-                                        return;
-                                      }
-
-                                      context.read<ProjectCubit>().addProject(
-                                        name: _projectName.text,
-
-                                        description: _projectDescription.text,
-
-                                        clientName: _client.text,
-
-                                        deadline: deadline!,
-                                      );
-                                    },
+                                  : () => _submit(context),
                             );
                           },
                         ),
