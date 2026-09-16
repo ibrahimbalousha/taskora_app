@@ -61,10 +61,10 @@ class ProjectCard extends StatelessWidget {
                 items: [PopupMenuItem(value: "Delete", child: Text("Delete"))],
               );
 
-              if (value == 'Delete') {
-                // context.read<ProjectCubit>().deleteProject(
-                //   widget.project[index].id,
-                // );
+              if (value == 'Delete' && context.mounted) {
+                context.read<ProjectCubit>().deleteProject(
+                  project[index].id,
+                );
               }
             },
             child: Container(

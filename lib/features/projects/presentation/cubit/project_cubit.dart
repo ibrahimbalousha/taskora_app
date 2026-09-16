@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:taskora_app/features/projects/domain/entities/project_entity.dart';
+import 'package:taskora_app/features/projects/domain/usecases/delete_project_usecase.dart';
 import 'package:taskora_app/features/projects/domain/usecases/get_projects_use_case.dart';
 import 'package:taskora_app/features/projects/domain/usecases/project_add_ues_case.dart';
 
@@ -10,9 +11,11 @@ class ProjectCubit extends Cubit<ProjectState> {
   ProjectCubit({
     required this.projectAddUesCase,
     required this.getProjectsUseCase,
+    required this.deleteProjectUseCase,
   }) : super(ProjectInitial());
   final GetProjectsUseCase getProjectsUseCase;
   final ProjectAddUesCase projectAddUesCase;
+  final DeleteProjectUseCase deleteProjectUseCase;
 
   Future<void> getProject() async {
     emit(ProjectsLoading());
@@ -54,5 +57,13 @@ class ProjectCubit extends Cubit<ProjectState> {
         emit(ProjectAddSuccess(project: project));
       },
     );
+  }
+
+  Future<void> deleteProject(String id) async {
+    final result = await deleteProjectUseCase(id: id);
+
+    result.fold((failure) {
+      emit(ProjectsFailure(message: failure.message));
+    }, (_) => getProject());
   }
 }

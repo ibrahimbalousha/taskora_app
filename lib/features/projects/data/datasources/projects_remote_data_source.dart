@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:dartz/dartz.dart';
 import 'package:http/http.dart' as http;
 import 'package:taskora_app/core/config/constants/request_constants.dart';
 import 'package:taskora_app/features/projects/data/Model/project_model.dart';
@@ -13,6 +14,7 @@ abstract class ProjectsRemoteDataSource {
     required String clientName,
     required String deadline,
   });
+  Future<Unit> deleteProject({required String token, required String id});
 }
 
 class ProjectsRemoteDataSourceImpl implements ProjectsRemoteDataSource {
@@ -83,5 +85,29 @@ class ProjectsRemoteDataSourceImpl implements ProjectsRemoteDataSource {
     }
 
     throw Exception(responseBody['message'] ?? 'Failed to add project');
+  }
+
+  @override
+  Future<Unit> deleteProject({
+    required String token,
+    required String id,
+  }) async {
+    final url = Uri.parse('${ApiConstants.baseUrl}/project/romve/$id');
+    final response = await client.delete(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      return unit;
+    }
+
+    final Map<String, dynamic> responseBody = response.body.isNotEmpty
+        ? jsonDecode(response.body) as Map<String, dynamic>
+        : {};
+    throw Exception(responseBody['message'] ?? 'Failed to delete project');
   }
 }

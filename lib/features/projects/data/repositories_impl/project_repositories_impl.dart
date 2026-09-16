@@ -58,4 +58,21 @@ class ProjectRepositoriesImpl implements ProjectRepository {
       return Left(ServerFailure(e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, Unit>> deleteProject({required String id}) async {
+    try {
+      final String? token = sharedPreferences.getString('token');
+
+      if (token == null || token.isEmpty) {
+        return Left(ServerFailure('Token not found'));
+      }
+
+      await remoteDataSource.deleteProject(token: token, id: id);
+
+      return const Right(unit);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
 }
