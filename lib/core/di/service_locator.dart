@@ -5,6 +5,7 @@ import 'package:taskora_app/features/main_layout/presentation/cubit/main_layout_
 import 'package:taskora_app/features/projects/data/datasources/projects_remote_data_source.dart';
 import 'package:taskora_app/features/projects/data/repositories_impl/project_repositories_impl.dart';
 import 'package:taskora_app/features/projects/domain/repositories/project_repository.dart';
+import 'package:taskora_app/features/projects/domain/usecases/delete_project_usecase.dart';
 import 'package:taskora_app/features/projects/domain/usecases/get_projects_use_case.dart';
 import 'package:taskora_app/features/projects/domain/usecases/project_add_ues_case.dart';
 import 'package:taskora_app/features/projects/presentation/cubit/project_cubit.dart';
@@ -25,6 +26,7 @@ import '../../features/splash_onboarding/data/repositories/splash_onboarding_rep
 import '../../features/splash_onboarding/domain/repositories/splash_onboarding_repository.dart';
 import '../../features/splash_onboarding/domain/usecases/check_onboarding_status_usecase.dart';
 import '../../features/splash_onboarding/domain/usecases/complete_onboarding_usecase.dart';
+import '../../features/splash_onboarding/domain/usecases/logout_usecase.dart';
 import '../../features/splash_onboarding/presentation/bloc/splash_onboarding_bloc.dart';
 
 final GetIt locator = GetIt.instance;
@@ -58,6 +60,10 @@ Future<void> setupLocator() async {
 
   locator.registerLazySingleton<CheckLoginStatusUseCase>(
     () => CheckLoginStatusUseCase(locator<SplashOnboardingRepository>()),
+  );
+
+  locator.registerLazySingleton<LogoutUseCase>(
+    () => LogoutUseCase(locator<SplashOnboardingRepository>()),
   );
 
   locator.registerFactory<SplashOnboardingBloc>(
@@ -128,10 +134,15 @@ Future<void> setupLocator() async {
     () => ProjectAddUesCase(repositories: locator<ProjectRepository>()),
   );
 
+  locator.registerLazySingleton<DeleteProjectUseCase>(
+    () => DeleteProjectUseCase(locator<ProjectRepository>()),
+  );
+
   locator.registerFactory<ProjectCubit>(
     () => ProjectCubit(
       getProjectsUseCase: locator<GetProjectsUseCase>(),
       projectAddUesCase: locator<ProjectAddUesCase>(),
+      deleteProjectUseCase: locator<DeleteProjectUseCase>(),
     ),
   );
 
