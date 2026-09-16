@@ -108,7 +108,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     result.fold(
       (failure) => emit(VerifyCodeError(failure.message)),
-      (_) => emit(VerifyResetCodeSuccess()),
+      (isVerified) => isVerified
+          ? emit(VerifyResetCodeSuccess())
+          : emit(VerifyCodeError('Invalid code')),
     );
   }
 
