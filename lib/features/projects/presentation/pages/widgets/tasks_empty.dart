@@ -5,7 +5,9 @@ import 'package:taskora_app/core/config/constants/color_manager.dart';
 import 'package:taskora_app/core/config/widgets/buttons/app_elevated_button.dart';
 
 class TasksEmpty extends StatelessWidget {
-  const TasksEmpty({super.key});
+  const TasksEmpty({super.key, required this.onAddTask});
+
+  final VoidCallback onAddTask;
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +44,7 @@ class TasksEmpty extends StatelessWidget {
         AppElevatedButton(
           label: 'Add Task',
           width: 150,
-          onPressed: () {},
+          onPressed: onAddTask,
           icon: Material(
             color: Colors.white,
             shape: const CircleBorder(),
