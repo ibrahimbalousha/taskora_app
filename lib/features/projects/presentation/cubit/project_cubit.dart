@@ -4,6 +4,7 @@ import 'package:taskora_app/features/projects/domain/entities/project_entity.dar
 import 'package:taskora_app/features/projects/domain/usecases/delete_project_usecase.dart';
 import 'package:taskora_app/features/projects/domain/usecases/get_projects_use_case.dart';
 import 'package:taskora_app/features/projects/domain/usecases/project_add_ues_case.dart';
+import 'package:taskora_app/features/projects/domain/usecases/update_project_usecase.dart';
 
 part 'project_state.dart';
 
@@ -12,10 +13,12 @@ class ProjectCubit extends Cubit<ProjectState> {
     required this.projectAddUesCase,
     required this.getProjectsUseCase,
     required this.deleteProjectUseCase,
+    required this.updateProjectUseCase,
   }) : super(ProjectInitial());
   final GetProjectsUseCase getProjectsUseCase;
   final ProjectAddUesCase projectAddUesCase;
   final DeleteProjectUseCase deleteProjectUseCase;
+  final UpdateProjectUseCase updateProjectUseCase;
 
   Future<void> getProject() async {
     emit(ProjectsLoading());
@@ -65,5 +68,28 @@ class ProjectCubit extends Cubit<ProjectState> {
     result.fold((failure) {
       emit(ProjectsFailure(message: failure.message));
     }, (_) => getProject());
+  }
+
+  Future<void> updateProject({
+    required String id,
+    required String name,
+    required String description,
+    required String clientName,
+    required String deadline,
+  }) async {
+    emit(ProjectUpdateLoading());
+
+    final result = await updateProjectUseCase(
+      id: id,
+      name: name,
+      description: description,
+      clientName: clientName,
+      deadline: deadline,
+    );
+
+    result.fold(
+      (failure) => emit(ProjectUpdateFailure(message: failure.message)),
+      (_) => emit(ProjectUpdateSuccess()),
+    );
   }
 }

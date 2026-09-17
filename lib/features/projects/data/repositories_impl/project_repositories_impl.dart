@@ -75,4 +75,36 @@ class ProjectRepositoriesImpl implements ProjectRepository {
       return Left(ServerFailure(e.toString()));
     }
   }
+
+  @override
+  Future<Either<Failure, Unit>> updateProject({
+    required String id,
+    required String name,
+    required String description,
+    required String clientName,
+    required String deadline,
+  }) async {
+    try {
+      final String? token = sharedPreferences.getString('token');
+
+      if (token == null || token.isEmpty) {
+        return Left(ServerFailure('Token not found'));
+      }
+
+      await remoteDataSource.updateProject(
+        token: token,
+        body: {
+          '_id': id,
+          'name': name,
+          'description': description,
+          'client': clientName,
+          'deadline': deadline,
+        },
+      );
+
+      return const Right(unit);
+    } catch (e) {
+      return Left(ServerFailure(e.toString()));
+    }
+  }
 }

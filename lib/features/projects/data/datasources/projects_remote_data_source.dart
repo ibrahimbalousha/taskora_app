@@ -15,6 +15,15 @@ abstract class ProjectsRemoteDataSource {
     required String deadline,
   });
   Future<Unit> deleteProject({required String token, required String id});
+  Future<Unit> updateProject({required String token, required Map<String, dynamic> body});
+}
+
+String _errorMessage(Map<String, dynamic> body, String fallback) {
+  final errors = body['errors'];
+  if (errors is List && errors.isNotEmpty) {
+    return errors.join('\n');
+  }
+  return body['message'] ?? fallback;
 }
 
 class ProjectsRemoteDataSourceImpl implements ProjectsRemoteDataSource {
@@ -43,7 +52,7 @@ class ProjectsRemoteDataSourceImpl implements ProjectsRemoteDataSource {
           .toList();
     }
 
-    throw Exception(responseBody['message'] ?? 'Failed to get projects');
+    throw Exception(_errorMessage(responseBody, 'Failed to get projects'));
   }
 
   @override
@@ -84,7 +93,7 @@ class ProjectsRemoteDataSourceImpl implements ProjectsRemoteDataSource {
       return ProjectModel.fromJson(projectData);
     }
 
-    throw Exception(responseBody['message'] ?? 'Failed to add project');
+    throw Exception(_errorMessage(responseBody, 'Failed to add project'));
   }
 
   @override
@@ -108,6 +117,31 @@ class ProjectsRemoteDataSourceImpl implements ProjectsRemoteDataSource {
     final Map<String, dynamic> responseBody = response.body.isNotEmpty
         ? jsonDecode(response.body) as Map<String, dynamic>
         : {};
-    throw Exception(responseBody['message'] ?? 'Failed to delete project');
+    throw Exception(_errorMessage(responseBody, 'Failed to delete project'));
+  }
+
+  @override
+  Future<Unit> updateProject({
+    required String token,
+    required Map<String, dynamic> body,
+  }) async {
+    final url = Uri.parse('${ApiConstants.baseUrl}/project/updatProject');
+    final response = await client.put(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(body),
+    );
+
+    if (response.statusCode == 200) {
+      return unit;
+    }
+
+    final Map<String, dynamic> responseBody = response.body.isNotEmpty
+        ? jsonDecode(response.body) as Map<String, dynamic>
+        : {};
+    throw Exception(_errorMessage(responseBody, 'Failed to update project'));
   }
 }

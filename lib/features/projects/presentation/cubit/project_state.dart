@@ -51,3 +51,16 @@ class ProjectAddFailure extends ProjectState {
   @override
   List<Object> get props => [message];
 }
+
+final class ProjectUpdateLoading extends ProjectState {}
+
+final class ProjectUpdateSuccess extends ProjectState {}
+
+class ProjectUpdateFailure extends ProjectState {
+  final String message;
+
+  const ProjectUpdateFailure({required this.message});
+
+  @override
+  List<Object> get props => [message];
+}

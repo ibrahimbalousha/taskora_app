@@ -6,24 +6,37 @@ import 'package:taskora_app/core/config/widgets/app_bars/custom_app_bar.dart';
 import 'package:taskora_app/core/config/widgets/buttons/app_elevated_button.dart';
 import 'package:taskora_app/core/config/widgets/buttons/custom_text_button.dart';
 import 'package:taskora_app/core/config/widgets/inputs/app_text_field.dart';
+import 'package:taskora_app/features/projects/domain/entities/project_entity.dart';
 import 'package:taskora_app/features/projects/presentation/cubit/project_cubit.dart';
 
 class CreateProject extends StatefulWidget {
-  const CreateProject({super.key});
+  const CreateProject({super.key, this.project});
+
+  final ProjectEntity? project;
 
   @override
   State<CreateProject> createState() => _CreateProjectState();
 }
 
 class _CreateProjectState extends State<CreateProject> {
-  final TextEditingController _projectName = TextEditingController();
-
-  final TextEditingController _projectDescription = TextEditingController();
-
-  final TextEditingController _client = TextEditingController();
+  late final TextEditingController _projectName;
+  late final TextEditingController _projectDescription;
+  late final TextEditingController _client;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   DateTime? selectedDate;
+
+  bool get _isEdit => widget.project != null;
+
+  @override
+  void initState() {
+    super.initState();
+    final project = widget.project;
+    _projectName = TextEditingController(text: project?.name ?? '');
+    _projectDescription = TextEditingController(text: project?.description ?? '');
+    _client = TextEditingController(text: project?.client ?? '');
+    selectedDate = project?.deadline;
+  }
 
   String? get deadline {
     if (selectedDate == null) return null;
@@ -43,12 +56,24 @@ class _CreateProjectState extends State<CreateProject> {
       return;
     }
 
-    context.read<ProjectCubit>().addProject(
-      name: _projectName.text,
-      description: _projectDescription.text,
-      clientName: _client.text,
-      deadline: deadline!,
-    );
+    final cubit = context.read<ProjectCubit>();
+
+    if (_isEdit) {
+      cubit.updateProject(
+        id: widget.project!.id,
+        name: _projectName.text,
+        description: _projectDescription.text,
+        clientName: _client.text,
+        deadline: deadline!,
+      );
+    } else {
+      cubit.addProject(
+        name: _projectName.text,
+        description: _projectDescription.text,
+        clientName: _client.text,
+        deadline: deadline!,
+      );
+    }
   }
 
   @override
@@ -63,28 +88,34 @@ class _CreateProjectState extends State<CreateProject> {
   Widget build(BuildContext context) {
     return BlocBuilder<ProjectCubit, ProjectState>(
       builder: (context, state) {
-        final isNotBack = state is ProjectAddLoading;
+        final isBusy = state is ProjectAddLoading || state is ProjectUpdateLoading;
 
         return PopScope(
-          canPop: !isNotBack,
+          canPop: !isBusy,
           child: Scaffold(
             appBar: CustomAppBar(
-              title: 'Create Project',
+              title: _isEdit ? 'Edit Project' : 'Create Project',
               actions: [
                 CustomTextButton(
                   label: 'Save',
-                  onPressed: isNotBack ? null : () => _submit(context),
+                  onPressed: isBusy ? null : () => _submit(context),
                 ),
               ],
             ),
 
             body: BlocListener<ProjectCubit, ProjectState>(
               listener: (context, state) {
-                if (state is ProjectAddSuccess) {
+                if (state is ProjectAddSuccess || state is ProjectUpdateSuccess) {
                   Navigator.pop(context, true);
                 }
 
                 if (state is ProjectAddFailure) {
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text(state.message)));
+                }
+
+                if (state is ProjectUpdateFailure) {
                   ScaffoldMessenger.of(
                     context,
                   ).showSnackBar(SnackBar(content: Text(state.message)));
@@ -102,7 +133,11 @@ class _CreateProjectState extends State<CreateProject> {
                       crossAxisAlignment: CrossAxisAlignment.start,
 
                       children: [
-                        const Text('Setup a new Project to track your work'),
+                        Text(
+                          _isEdit
+                              ? 'Update your project details'
+                              : 'Setup a new Project to track your work',
+                        ),
 
                         AppTextField(
                           hint: 'e.g Mobile App Redesign',
@@ -162,12 +197,16 @@ class _CreateProjectState extends State<CreateProject> {
                           padding: const EdgeInsets.only(top: 28.0),
                           child: ListTile(
                             onTap: () async {
+                              final now = DateTime.now();
+                              final initialDate = selectedDate ?? now;
+                              final firstDate = initialDate.isBefore(now) ? initialDate : now;
+
                               final DateTime? pickedDate = await showDatePicker(
                                 context: context,
 
-                                initialDate: DateTime.now(),
+                                initialDate: initialDate,
 
-                                firstDate: DateTime.now(),
+                                firstDate: firstDate,
 
                                 lastDate: DateTime(2030),
                               );
@@ -204,13 +243,14 @@ class _CreateProjectState extends State<CreateProject> {
 
                         BlocBuilder<ProjectCubit, ProjectState>(
                           builder: (context, state) {
-                            return AppElevatedButton(
-                              label: 'Create Project',
+                            final isLoading =
+                                state is ProjectAddLoading || state is ProjectUpdateLoading;
 
-                              isLoading: state is ProjectAddLoading,
-                              onPressed: state is ProjectAddLoading
-                                  ? null
-                                  : () => _submit(context),
+                            return AppElevatedButton(
+                              label: _isEdit ? 'Update Project' : 'Create Project',
+
+                              isLoading: isLoading,
+                              onPressed: isLoading ? null : () => _submit(context),
                             );
                           },
                         ),

@@ -12,4 +12,11 @@ abstract class ProjectRepository {
     required String deadline,
   });
   Future<Either<Failure, Unit>> deleteProject({required String id});
+  Future<Either<Failure, Unit>> updateProject({
+    required String id,
+    required String name,
+    required String description,
+    required String clientName,
+    required String deadline,
+  });
 }
