@@ -7,8 +7,10 @@ import 'package:taskora_app/core/config/widgets/app_bars/custom_app_bar.dart';
 import 'package:taskora_app/core/di/service_locator.dart';
 import 'package:taskora_app/core/router/routers_name.dart';
 import 'package:taskora_app/features/main_layout/presentation/pages/widget/statistic_item_profile.dart';
+import 'package:taskora_app/features/projects/domain/entities/project_entity.dart';
 import 'package:taskora_app/features/projects/presentation/cubit/project_cubit.dart';
 import 'package:taskora_app/features/splash_onboarding/domain/usecases/logout_usecase.dart';
+import 'package:taskora_app/features/tasks/presentation/cubit/task_cubit.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -21,6 +23,9 @@ class ProfilePage extends StatelessWidget {
         child: BlocBuilder<ProjectCubit, ProjectState>(
           builder: (context, state) {
             String projectsCount = '0';
+            final projects = state is ProjectsLoaded
+                ? state.projects
+                : const <ProjectEntity>[];
 
             if (state is ProjectsLoading) {
               return Center(
@@ -36,165 +41,181 @@ class ProfilePage extends StatelessWidget {
               projectsCount = '0';
             }
 
-            return Column(
-              children: [
-                CustomAppBar(title: 'Profile'),
-                SizedBox(height: 12.h),
-                Stack(
-                  children: [
-                    CircleAvatar(maxRadius: 70),
-                    Positioned(
-                      top: 90,
-                      left: 90,
-                      child: Material(
-                        color: Colors.white,
-                        shape: const CircleBorder(),
-                        elevation: 3,
-                        child: IconButton(
-                          onPressed: () {},
-                          color: ColorManager.primary,
-                          icon: Icon(Icons.drive_file_rename_outline),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Text(
-                  'noor jber',
-                  style: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16.sp,
-                    color: Colors.black,
-                  ),
-                ),
-                Text(
-                  'Ux-Ui Designer',
-                  style: TextStyle(
-                    fontSize: 14.sp,
-                    color: ColorManager.textSecondary,
-                  ),
-                ),
-                SizedBox(height: 18.h),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    StatisticItemProfile(
-                      icon: Icons.devices_outlined,
-                      value: projectsCount,
-                      title: 'PROJECTS',
-                    ),
-                    StatisticItemProfile(
-                      icon: Icons.savings_outlined,
-                      value: '55',
-                      title: 'WORKING HOURS',
-                    ),
-                    StatisticItemProfile(
-                      icon: Icons.assignment_outlined,
-                      value: '\$ 12,340',
-                      title: 'TOTAL EARNINGS',
-                    ),
-                  ],
-                ),
-                SizedBox(height: 22.h),
+            final projectRates = {for (final p in projects) p.id: p.watchCost};
 
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: ColorManager.textSecondary,
-                      width: 0.5,
-                    ),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  padding: EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Account Information',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('Hourly Rate'),
-                          Text(
-                            '\$50/Hour',
-                            style: TextStyle(
-                              color: ColorManager.primary,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('Member since'),
-                          Text(
-                            'March2025',
-                            style: TextStyle(
-                              color: ColorManager.primary,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 22.h),
-                InkWell(
-                  onTap: () async {
-                    await locator<LogoutUseCase>()();
+            return BlocBuilder<TaskCubit, TaskState>(
+              builder: (context, taskState) {
+                final earnings = taskState is TasksLoaded
+                    ? taskState.tasks
+                          .where((t) => t.status == 'done')
+                          .fold<num>(
+                            0,
+                            (sum, t) =>
+                                sum +
+                                t.totalHours * (projectRates[t.projectId] ?? 0),
+                          )
+                    : 0;
 
-                    if (!context.mounted) return;
-
-                    Navigator.pushNamedAndRemoveUntil(
-                      context,
-                      RoutesName.login,
-                      (route) => false,
-                    );
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: ColorManager.textSecondary,
-                        width: 0.5,
-                      ),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    padding: EdgeInsets.all(12),
-                    child: Row(
-                      children: [
-                        Material(
-                          color: ColorManager.primary,
-                          shape: const CircleBorder(),
-                          child: Padding(
-                            padding: const EdgeInsets.all(6.0),
-                            child: Icon(Icons.logout, color: Colors.white),
-                          ),
-                        ),
-                        SizedBox(width: 12.w),
-                        Text(
-                          'Log out',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
+                return _buildProfile(context, projectsCount, earnings);
+              },
             );
           },
         ),
       ),
+    );
+  }
+
+  Widget _buildProfile(
+    BuildContext context,
+    String projectsCount,
+    num earnings,
+  ) {
+    return Column(
+      children: [
+        CustomAppBar(title: 'Profile'),
+        SizedBox(height: 12.h),
+        Stack(
+          children: [
+            CircleAvatar(maxRadius: 70),
+            Positioned(
+              top: 90,
+              left: 90,
+              child: Material(
+                color: Colors.white,
+                shape: const CircleBorder(),
+                elevation: 3,
+                child: IconButton(
+                  onPressed: () {},
+                  color: ColorManager.primary,
+                  icon: Icon(Icons.drive_file_rename_outline),
+                ),
+              ),
+            ),
+          ],
+        ),
+        Text(
+          'noor jber',
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+            fontSize: 16.sp,
+            color: Colors.black,
+          ),
+        ),
+        Text(
+          'Ux-Ui Designer',
+          style: TextStyle(fontSize: 14.sp, color: ColorManager.textSecondary),
+        ),
+        SizedBox(height: 18.h),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            StatisticItemProfile(
+              icon: Icons.devices_outlined,
+              value: projectsCount,
+              title: 'PROJECTS',
+            ),
+            StatisticItemProfile(
+              icon: Icons.savings_outlined,
+              value: '55',
+              title: 'WORKING HOURS',
+            ),
+            StatisticItemProfile(
+              icon: Icons.assignment_outlined,
+              value: '\$ ${earnings.round()}',
+              title: 'TOTAL EARNINGS',
+            ),
+          ],
+        ),
+        SizedBox(height: 22.h),
+
+        Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: ColorManager.textSecondary, width: 0.5),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          padding: EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Account Information',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Hourly Rate'),
+                  Text(
+                    '\$50/Hour',
+                    style: TextStyle(
+                      color: ColorManager.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Member since'),
+                  Text(
+                    'March2025',
+                    style: TextStyle(
+                      color: ColorManager.primary,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+        SizedBox(height: 22.h),
+        InkWell(
+          onTap: () async {
+            await locator<LogoutUseCase>()();
+
+            if (!context.mounted) return;
+
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              RoutesName.login,
+              (route) => false,
+            );
+          },
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border.all(color: ColorManager.textSecondary, width: 0.5),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            padding: EdgeInsets.all(12),
+            child: Row(
+              children: [
+                Material(
+                  color: ColorManager.primary,
+                  shape: const CircleBorder(),
+                  child: Padding(
+                    padding: const EdgeInsets.all(6.0),
+                    child: Icon(Icons.logout, color: Colors.white),
+                  ),
+                ),
+                SizedBox(width: 12.w),
+                Text(
+                  'Log out',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
