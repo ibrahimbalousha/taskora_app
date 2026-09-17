@@ -9,6 +9,8 @@ class RoutesName {
   static const String greatNewPasswoed = '/greatNewPasswoed';
     static const String createProject = '/createProject';
         static const String projectDetails = '/projectDetails';
+        static const String createTask = '/createTask';
+        static const String taskDetails = '/taskDetails';
 
 
 

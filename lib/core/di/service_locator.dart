@@ -8,8 +8,17 @@ import 'package:taskora_app/features/projects/domain/repositories/project_reposi
 import 'package:taskora_app/features/projects/domain/usecases/delete_project_usecase.dart';
 import 'package:taskora_app/features/projects/domain/usecases/get_projects_use_case.dart';
 import 'package:taskora_app/features/projects/domain/usecases/project_add_ues_case.dart';
+import 'package:taskora_app/features/projects/domain/usecases/update_project_usecase.dart';
 import 'package:taskora_app/features/projects/presentation/cubit/project_cubit.dart';
 import 'package:taskora_app/features/splash_onboarding/domain/usecases/check_login_status_usecase.dart';
+import 'package:taskora_app/features/tasks/data/datasources/tasks_remote_data_source.dart';
+import 'package:taskora_app/features/tasks/data/repositories_impl/task_repositories_impl.dart';
+import 'package:taskora_app/features/tasks/domain/repositories/task_repository.dart';
+import 'package:taskora_app/features/tasks/domain/usecases/add_task_use_case.dart';
+import 'package:taskora_app/features/tasks/domain/usecases/delete_task_use_case.dart';
+import 'package:taskora_app/features/tasks/domain/usecases/get_tasks_use_case.dart';
+import 'package:taskora_app/features/tasks/domain/usecases/update_task_use_case.dart';
+import 'package:taskora_app/features/tasks/presentation/cubit/task_cubit.dart';
 
 import '../../features/auth/data/datasources/auth_remote_data_source.dart';
 import '../../features/auth/data/repositories/auth_repository_impl.dart';
@@ -138,11 +147,49 @@ Future<void> setupLocator() async {
     () => DeleteProjectUseCase(locator<ProjectRepository>()),
   );
 
+  locator.registerLazySingleton<UpdateProjectUseCase>(
+    () => UpdateProjectUseCase(locator<ProjectRepository>()),
+  );
+
   locator.registerFactory<ProjectCubit>(
     () => ProjectCubit(
       getProjectsUseCase: locator<GetProjectsUseCase>(),
       projectAddUesCase: locator<ProjectAddUesCase>(),
       deleteProjectUseCase: locator<DeleteProjectUseCase>(),
+      updateProjectUseCase: locator<UpdateProjectUseCase>(),
+    ),
+  );
+
+  // Tasks
+  locator.registerLazySingleton<TasksRemoteDataSource>(
+    () => TasksRemoteDataSourceImpl(client: locator<http.Client>()),
+  );
+  locator.registerLazySingleton<TaskRepository>(
+    () => TaskRepositoriesImpl(
+      remoteDataSource: locator<TasksRemoteDataSource>(),
+      sharedPreferences: locator<SharedPreferences>(),
+    ),
+  );
+
+  locator.registerLazySingleton<GetTasksUseCase>(
+    () => GetTasksUseCase(locator<TaskRepository>()),
+  );
+  locator.registerLazySingleton<AddTaskUseCase>(
+    () => AddTaskUseCase(locator<TaskRepository>()),
+  );
+  locator.registerLazySingleton<UpdateTaskUseCase>(
+    () => UpdateTaskUseCase(locator<TaskRepository>()),
+  );
+  locator.registerLazySingleton<DeleteTaskUseCase>(
+    () => DeleteTaskUseCase(locator<TaskRepository>()),
+  );
+
+  locator.registerFactory<TaskCubit>(
+    () => TaskCubit(
+      getTasksUseCase: locator<GetTasksUseCase>(),
+      addTaskUseCase: locator<AddTaskUseCase>(),
+      updateTaskUseCase: locator<UpdateTaskUseCase>(),
+      deleteTaskUseCase: locator<DeleteTaskUseCase>(),
     ),
   );
 

@@ -13,6 +13,9 @@ import 'package:taskora_app/features/projects/presentation/pages/create_project.
 import 'package:taskora_app/features/projects/presentation/pages/project_details.dart';
 import 'package:taskora_app/features/splash_onboarding/presentation/pages/flutter_splash_page.dart';
 import 'package:taskora_app/features/splash_onboarding/presentation/pages/onboarding_page.dart';
+import 'package:taskora_app/features/tasks/presentation/cubit/task_cubit.dart';
+import 'package:taskora_app/features/tasks/presentation/pages/create_task_page.dart';
+import 'package:taskora_app/features/tasks/presentation/pages/task_details_page.dart';
 import 'routers_name.dart';
 
 class AppRouter {
@@ -30,8 +33,11 @@ class AppRouter {
         return MaterialPageRoute(builder: (_) => const SignUpPage());
       case RoutesName.home:
         return MaterialPageRoute(
-          builder: (_) => BlocProvider(
-            create: (_) => locator<ProjectCubit>(),
+          builder: (_) => MultiBlocProvider(
+            providers: [
+              BlocProvider(create: (_) => locator<ProjectCubit>()),
+              BlocProvider(create: (_) => locator<TaskCubit>()),
+            ],
             child: const MainLayout(),
           ),
         );
@@ -44,16 +50,36 @@ class AppRouter {
       case RoutesName.projectDetails:
         final project = settings.arguments as ProjectEntity;
         return MaterialPageRoute(
-          builder: (_) => BlocProvider(
-            create: (_) => locator<ProjectCubit>(),
+          builder: (_) => MultiBlocProvider(
+            providers: [
+              BlocProvider(create: (_) => locator<ProjectCubit>()),
+              BlocProvider(create: (_) => locator<TaskCubit>()),
+            ],
             child: ProjectDetails(project: project),
           ),
         );
       case RoutesName.createProject:
+        final project = settings.arguments as ProjectEntity?;
         return MaterialPageRoute(
           builder: (_) => BlocProvider(
             create: (_) => locator<ProjectCubit>(),
-            child: const CreateProject(),
+            child: CreateProject(project: project),
+          ),
+        );
+      case RoutesName.createTask:
+        final args = settings.arguments as CreateTaskArgs;
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (_) => locator<TaskCubit>(),
+            child: CreateTaskPage(args: args),
+          ),
+        );
+      case RoutesName.taskDetails:
+        final args = settings.arguments as TaskDetailsArgs;
+        return MaterialPageRoute(
+          builder: (_) => BlocProvider(
+            create: (_) => locator<TaskCubit>(),
+            child: TaskDetailsPage(task: args.task, projectName: args.projectName),
           ),
         );
 
