@@ -19,7 +19,7 @@ class ProjectModel extends ProjectEntity {
       deadline: DateTime.parse(json['deadline'] as String),
       description: json['description'] as String,
       client: json['client'] as String,
-      watchCost: num.tryParse(json['watchCost']?.toString() ?? '0') ?? 0,
+      watchCost: num.tryParse(json['WatchCost']?.toString() ?? '0') ?? 0,
     );
   }
 }
